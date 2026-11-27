@@ -147,6 +147,16 @@ const amap=q=>({
 // Amap 공식 iOS 경로 URI: 출발·도착 좌표가 없으면 sname/dname 이름으로 경로 계획. t: 0 운전, 1 대중교통, 2 도보
 // (Android는 공식 문서상 dlat/dlon 필수라 좌표 없이는 쓰지 않음 → iOS에서만 버튼 표시)
 const amapPath=(q,m)=>({app:`iosamap://path?sourceApplication=cqtrip&sname=${enc(H)}&dname=${enc(q)}&dev=0&t=${m==='walking'?2:m==='driving'?0:1}`,web:amap(q).web});
+// Android용 목적지 좌표: OpenStreetMap(Nominatim) WGS-84 → dev=1로 넘기면 Amap이 GCJ-02로 변환(Amap 공식 문서).
+// 장소와 정확히 맞는 POI만 넣음. 공항 T3·다리·케이블카·긴 도로 등 한 점으로 정하기 애매한 곳은 일부러 비움
+const GEO={'解放碑':[29.5601078,106.5733671],'洪崖洞':[29.5650738,106.5753425],'李子坝轻轨站观景平台':[29.5556826,106.5338753],'鹅岭公园':[29.5524602,106.5320399],
+ '十八梯传统风貌区':[29.5541255,106.568959],'山城巷':[29.5534108,106.5629178],'磁器口古镇':[29.5792968,106.4424353],'小什字':[29.5618154,106.5791934],'下浩里':[29.5604626,106.5916274],
+ '朝天门广场':[29.5696961,106.5840783],'戴家巷崖壁步道':[29.5638836,106.5728591],'白象居':[29.5585282,106.5813482],'重庆人民大礼堂':[29.5643361,106.5504098],
+ '重庆中国三峡博物馆':[29.5648943,106.5465582],'来福士探索舱':[29.5675551,106.5831253]};
+// Android Amap 경로 URI(공식 문서: amapuri://route/plan/, dlat·dlon 필수). 숙소 좌표는 번지까지 확인이 안 돼서 출발지는 비움 → 현재 위치에서 출발
+const amapRoute=(q,m)=>({app:`amapuri://route/plan/?sourceApplication=cqtrip&dlat=${GEO[q][0]}&dlon=${GEO[q][1]}&dname=${enc(q)}&dev=1&t=${m==='walking'?2:m==='driving'?0:1}`,web:amap(q).web});
+const routeBtn=(q0,m)=>{const q=esc(q0);return IOS?`<a class="btn" data-name="${q}" ${L(amapPath(q0,m))}>Amap 길찾기(숙소→)</a>`
+ :AND&&GEO[q0]?`<a class="btn" data-name="${q}" ${L(amapRoute(q0,m))}>Amap 길찾기(현위치→)</a>`:''};
 const bm=m=>m==='walking'?'walking':m==='driving'?'driving':'transit';
 const bq=(q,m)=>`origin=${enc('name:'+H)}&destination=${enc('name:'+q)}&mode=${bm(m)}&region=${enc('重庆')}`;
 // 바이두 공식 문서: iOS는 baidumap://, Android 웹페이지에서는 bdapp:// 로 호출
@@ -246,7 +256,7 @@ tabs.innerHTML=DAYS.map(d=>`<a href="#${d.id}" data-id="${d.id}">${esc(d.tab)}</
 const card=s=>{
  const acts=s.z&&s.ad?`<div class="acts">
   <a class="btn r" data-name="${esc(s.z.split(' / ')[0])}" ${L(amap(s.z.split(' / ')[0]))}>Amap</a>
-  ${IOS?`<a class="btn" data-name="${esc(s.z.split(' / ')[0])}" ${L(amapPath(s.z.split(' / ')[0],s.mode))}>Amap 길찾기(숙소→)</a>`:''}
+  ${routeBtn(s.z.split(' / ')[0],s.mode)}
   <a class="btn" data-name="${esc(s.z.split(' / ')[0])}" ${L(baidu(s.z.split(' / ')[0],s.mode))}>바이두 길찾기(숙소→)</a>
   <button class="btn r" data-didi="${esc(s.z.split(' / ')[0])}">🚖 DiDi 호출</button>
   <button class="btn" data-copy="${esc(s.ad)}">주소 복사</button>
@@ -261,7 +271,7 @@ days.innerHTML=DAYS.map(d=>`<section class="day" id="p-${d.id}"><div class="dayh
  ${d.stops.map(card).join('')}
  ${d.alt.length?`<div class="alt"><h4>대안 · 현지인 추천</h4>${d.alt.map(a=>`<div class="altItem"><b>${esc(a.k)}</b> <span class="zh">${esc(a.z)}</span><p>${esc(a.d)}</p><div class="acts">
   <a class="btn r" data-name="${esc(a.z)}" ${L(amap(a.z))}>Amap</a>
-  ${IOS?`<a class="btn" data-name="${esc(a.z)}" ${L(amapPath(a.z,a.m))}>Amap 길찾기(숙소→)</a>`:''}
+  ${routeBtn(a.z,a.m)}
   <a class="btn" data-name="${esc(a.z)}" ${L(baidu(a.z,a.m))}>바이두 길찾기(숙소→)</a>
   <button class="btn r" data-didi="${esc(a.z)}">🚖 DiDi 호출</button>
   <button class="btn" data-copy="${esc(a.ad)}">주소 복사</button>
