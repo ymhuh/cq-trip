@@ -66,9 +66,6 @@ table{width:100%;border-collapse:collapse}td{padding:8px 4px;border-bottom:1px s
 #taxi .to{font:900 clamp(36px,10vw,76px)/1.15 "Noto Serif SC",serif;color:#c8281e;word-break:keep-all;overflow-wrap:anywhere}
 #taxi .ad{font-size:clamp(18px,4.6vw,26px);margin-top:16px;color:#444}
 #taxi .btn{margin:28px auto 0;background:#111;color:#fff}
-#didi{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.55);display:none;align-items:flex-end;justify-content:center;padding:16px}#didi.on{display:flex}
-.dbox{background:var(--card);color:var(--ink);border-radius:20px;padding:20px;width:min(100%,460px)}
-.dname{font-size:30px;font-weight:900;color:var(--red);margin:4px 0 8px}.dbox ol{padding-left:20px;margin:8px 0 16px}.dbox li{margin:6px 0}
 #toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);width:max-content;max-width:calc(100vw - 32px);text-align:center;background:#1d1615;color:#fff;padding:10px 16px;border-radius:999px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:30}
 #toast.on{opacity:1}
 footer{color:var(--mute);font-size:13px}
@@ -82,7 +79,7 @@ footer{color:var(--mute);font-size:13px}
 <header class="band">
  <div class="wrap">
   <h1>충칭 3박 4일</h1>
-  <p>11월 27일(금) – 30일(월) · 날짜별 동선, 길찾기, 택시 카드, 맛집을 한 페이지에</p>
+  <p>11월 27일(금) – 30일(월) · 날짜별 동선, 길찾기, DiDi 호출, 맛집을 한 페이지에</p>
   <svg class="hero" viewBox="0 0 900 260" role="img" aria-label="산비탈 빌딩 사이로 건물을 통과하는 모노레일과 강 위 케이블카">
    <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8f1c15"/><stop offset="1" stop-color="#e2553f"/></linearGradient>
    <linearGradient id="riv" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1f6f6c"/><stop offset="1" stop-color="#0d3d3c"/></linearGradient></defs>
@@ -114,7 +111,6 @@ footer{color:var(--mute);font-size:13px}
   <div><b>숙소</b><span class="zh">重庆市渝中区朝千路26号</span><span class="tip" style="color:#b3a49e">26 Chaoqian Rd · 소십자(小什字)~차오톈먼 사이, 해방비·홍야동 걸어서 가는 위치</span></div>
   <div class="acts" style="margin:0">
    <button class="btn r" data-didi="朝千路26号">🚖 숙소로 DiDi</button>
-   <button class="btn" data-taxi="朝千路26号|重庆市渝中区朝千路26号（小什字地铁站附近）">🚕 택시 카드</button>
    <button class="btn" data-copy="重庆市渝中区朝千路26号">주소 복사</button>
    <a class="btn" id="hotelAmap" data-name="朝千路26号">Amap</a>
   </div>
@@ -133,22 +129,6 @@ footer{color:var(--mute);font-size:13px}
  <div class="say zh" style="margin-top:20px;font-size:18px">谢谢！</div>
  <button class="btn" id="taxiClose">닫기</button>
 </div>
-<div id="didi" role="dialog" aria-modal="true" aria-label="DiDi 호출">
- <div class="dbox">
-  <div class="tip">목적지 이름을 복사했어요</div>
-  <div class="dname zh" id="dName"></div>
-  <ol>
-   <li>아래 <b>DiDi 앱 열기</b> 누르기</li>
-   <li><b>您要去哪儿</b>(목적지) 칸에 <b>붙여넣기</b> → 맨 위 결과 선택 → 호출</li>
-  </ol>
-  <!-- diditaxi:// 는 DiDi 공식 문서로 확인되지 않은 scheme(커뮤니티 목록 기준). 목적지 파라미터는 미확인이라 앱만 연다 -->
-  <a class="btn r" id="dApp" href="diditaxi://" data-app="1" data-fail="DiDi 앱이 안 열렸어요 · 「알리페이로 열기」를 눌러 주세요" style="width:100%;justify-content:center">DiDi 앱 열기</a>
-  <a class="btn" id="dAli" href="alipays://" data-app="1" data-fail="알리페이 앱이 안 열렸어요 · 앱 설치를 확인해 주세요" style="width:100%;justify-content:center;margin-top:8px">알리페이로 열기</a>
-  <p class="tip" style="margin:8px 0 0">알리페이로 열었다면: 검색창에 <b class="zh">滴滴出行</b> → 미니앱 열기 → 목적지 칸에 붙여넣기</p>
-  <button class="btn" id="dCopy" style="width:100%;justify-content:center;margin-top:8px">다시 복사</button>
-  <button class="btn" id="dClose" style="width:100%;justify-content:center;margin-top:8px">닫기</button>
- </div>
-</div>
 <div id="toast" role="status"></div>
 
 <script>
@@ -164,6 +144,9 @@ const amap=q=>({
  app:IOS?`iosamap://poi?sourceApplication=cqtrip&name=${enc(q)}&dev=0`
   :AND?`androidamap://poi?sourceApplication=cqtrip&keywords=${enc(q)}&dev=0`:'',
  web:`https://uri.amap.com/search?keyword=${enc(q)}&city=${enc('重庆')}&callnative=1`});
+// Amap 공식 iOS 경로 URI: 출발·도착 좌표가 없으면 sname/dname 이름으로 경로 계획. t: 0 운전, 1 대중교통, 2 도보
+// (Android는 공식 문서상 dlat/dlon 필수라 좌표 없이는 쓰지 않음 → iOS에서만 버튼 표시)
+const amapPath=(q,m)=>({app:`iosamap://path?sourceApplication=cqtrip&sname=${enc(H)}&dname=${enc(q)}&dev=0&t=${m==='walking'?2:m==='driving'?0:1}`,web:amap(q).web});
 const bm=m=>m==='walking'?'walking':m==='driving'?'driving':'transit';
 const bq=(q,m)=>`origin=${enc('name:'+H)}&destination=${enc('name:'+q)}&mode=${bm(m)}&region=${enc('重庆')}`;
 // 바이두 공식 문서: iOS는 baidumap://, Android 웹페이지에서는 bdapp:// 로 호출
@@ -183,7 +166,7 @@ const S=(t,k,z,ad,desc,how,mode,eat,tip)=>({t,k,z,ad,desc,how,eat:eat||[],tip,mo
 
 const DAYS=[
 {id:'day1',tab:'1일차 · 27(금)',title:'도착 & 첫 야경',sub:'인천 14:00 → 충칭 16:55. 숙소에 짐 두고 강변 밤 산책',stops:[
- S('16:55','장베이 공항 T3 도착','重庆江北国际机场T3航站楼','重庆江北国际机场T3航站楼','입국 심사 후 eSIM 켜고, 알리페이에서 DiDi(滴滴) 열어 두기.',
+ S('16:55','장베이 공항 T3 도착','重庆江北国际机场T3航站楼','重庆江北国际机场T3航站楼','입국 심사 후 eSIM 켜고, DiDi(滴滴) 앱에 로그인해 두기.',
   '<b>택시</b> 약 40–50분, 대략 70–90元 · <b>지하철</b> 10호선 → 6호선 환승 → 小什字역, 약 60분 · 짐이 있으면 택시 추천','',
   [food('공항 안 편의점','便利店','물·간식 정도만. 저녁은 시내에서')],'공항 택시는 반드시 공식 승차장(出租车上客区)에서. 호객 기사 무시'),
  S('19:00','해방비 (해방비 보행가)','解放碑','重庆市渝中区解放碑步行街','충칭의 한복판. 조명 켜진 기념비와 쇼핑가, 바로 옆 바이이 먹자골목.',
@@ -251,7 +234,7 @@ const DAYS=[
  S('05:00','체크아웃','朝千路26号','重庆市渝中区朝千路26号','전날 밤에 짐 정리 끝내고 영수증·여권 챙기기.',
   '','walking',[],'전날 밤 프런트에 "明天早上五点退房" 미리 말해 두기'),
  S('05:30','공항으로 출발','重庆江北国际机场T3航站楼','重庆江北国际机场T3航站楼','국제선 출발은 2시간 전 도착 권장.',
-  '<b>택시만 가능</b> (지하철 첫차 전) 약 40분, 대략 70–90元 · 알리페이 DiDi에서 <b>预约(예약)</b>으로 전날 밤 미리 잡아 두기','driving',
+  '<b>택시만 가능</b> (지하철 첫차 전) 약 40분, 대략 70–90元 · DiDi 앱에서 <b>预约(예약)</b>으로 전날 밤 미리 잡아 두기','driving',
   [],'원래 계획 06:00 출발도 가능하지만 여유 있게 05:30 추천'),
  S('08:30','충칭 출발 → 13:00 인천','CKG → ICN','','수고했어요!','','',[],'')
 ],alt:[]}
@@ -263,9 +246,9 @@ tabs.innerHTML=DAYS.map(d=>`<a href="#${d.id}" data-id="${d.id}">${esc(d.tab)}</
 const card=s=>{
  const acts=s.z&&s.ad?`<div class="acts">
   <a class="btn r" data-name="${esc(s.z.split(' / ')[0])}" ${L(amap(s.z.split(' / ')[0]))}>Amap</a>
+  ${IOS?`<a class="btn" data-name="${esc(s.z.split(' / ')[0])}" ${L(amapPath(s.z.split(' / ')[0],s.mode))}>Amap 길찾기(숙소→)</a>`:''}
   <a class="btn" data-name="${esc(s.z.split(' / ')[0])}" ${L(baidu(s.z.split(' / ')[0],s.mode))}>바이두 길찾기(숙소→)</a>
   <button class="btn r" data-didi="${esc(s.z.split(' / ')[0])}">🚖 DiDi 호출</button>
-  <button class="btn" data-taxi="${esc(s.z.split(' / ')[0]+'|'+s.ad)}">🚕 택시 카드</button>
   <button class="btn" data-copy="${esc(s.ad)}">주소 복사</button>
   <a target="_blank" rel="noopener" class="btn t" href="${pics(s.z.split(' / ')[0])}">사진</a></div>`:'';
  const eat=s.eat.length?`<details class="eat"><summary>주변 맛집 · 할 거리 (${s.eat.length})</summary><ul>${s.eat.map(f=>`<li><b>${esc(f.n)}</b> <span class="zh">${esc(f.z)}</span> ${f.d?'— '+esc(f.d):''} · <a data-name="${esc(f.z.split(' ')[0])}" ${L(amap(f.z.split(' ')[0]))}>Amap</a> <button class="btn" style="min-height:36px;padding:4px 10px" data-copy="${esc(f.z)}">복사</button></li>`).join('')}</ul></details>`:'';
@@ -278,22 +261,21 @@ days.innerHTML=DAYS.map(d=>`<section class="day" id="p-${d.id}"><div class="dayh
  ${d.stops.map(card).join('')}
  ${d.alt.length?`<div class="alt"><h4>대안 · 현지인 추천</h4>${d.alt.map(a=>`<div class="altItem"><b>${esc(a.k)}</b> <span class="zh">${esc(a.z)}</span><p>${esc(a.d)}</p><div class="acts">
   <a class="btn r" data-name="${esc(a.z)}" ${L(amap(a.z))}>Amap</a>
+  ${IOS?`<a class="btn" data-name="${esc(a.z)}" ${L(amapPath(a.z,a.m))}>Amap 길찾기(숙소→)</a>`:''}
   <a class="btn" data-name="${esc(a.z)}" ${L(baidu(a.z,a.m))}>바이두 길찾기(숙소→)</a>
   <button class="btn r" data-didi="${esc(a.z)}">🚖 DiDi 호출</button>
-  <button class="btn" data-taxi="${esc(a.z+'|'+a.ad)}">🚕 택시 카드</button>
   <button class="btn" data-copy="${esc(a.ad)}">주소 복사</button>
   <a target="_blank" rel="noopener" class="btn t" href="${pics(a.z)}">사진</a></div></div>`).join('')}</div>`:''}</section>`).join('')+`
 <section class="day" id="p-prep"><div class="dayhead"><h2>준비물 · 회화 · 긴급</h2><p>출발 전에 한 번, 현지에서 필요할 때 한 번</p></div>
 <div class="grid" style="margin-top:18px">
  <div class="box"><h3>앱 & 결제</h3><ul>
-  <li><b>알리페이</b> — 결제·지하철(交通出行 → 乘车码)·DiDi 택시 모두 여기서</li>
+  <li><b>알리페이</b> — 결제·지하철(交通出行 → 乘车码) 모두 여기서</li>
   <li>트래블월렛/트래블로그 카드 연결하면 수수료 낮음, 현금은 조금만</li>
   <li><b>Amap(高德地图)</b> 또는 바이두지도 — 구글맵은 위치가 어긋나요</li>
   <li><b>eSIM</b> 미리 설치, <b>VPN</b> 필수(카톡·구글 등)</li></ul></div>
  <div class="box"><h3>택시 타는 법</h3><ul>
-  <li>알리페이 검색창에 "滴滴出行" → 목적지에 중국어 이름 붙여넣기</li>
-  <li>이 페이지 <b>주소 복사</b> 버튼 → DiDi에 붙여넣기</li>
-  <li>길에서 잡을 땐 <b>🚕 택시 카드</b>를 기사에게 보여 주기</li>
+  <li><b>🚖 DiDi 호출</b> 버튼 → 목적지 이름이 복사되고 DiDi 앱이 열려요</li>
+  <li>DiDi 목적지(您要去哪儿) 칸에 붙여넣기 → 맨 위 결과 선택 → 호출</li>
   <li>충칭은 언덕길이라 지도상 가까워도 걸으면 계단 지옥일 수 있어요</li></ul></div>
  <div class="box"><h3>바로 쓰는 중국어</h3><table>${[
   ['조금만 맵게','微辣','wēi là'],['안 맵게','不辣','bú là'],['고수 빼 주세요','不要香菜','bú yào xiāngcài'],['계산할게요','买单','mǎi dān'],['알리페이 돼요?','能用支付宝吗？','néng yòng Zhīfùbǎo ma'],['화장실 어디예요?','厕所在哪里？','cèsuǒ zài nǎlǐ'],['이거 주세요','我要这个','wǒ yào zhège'],['얼마예요?','多少钱？','duōshao qián']
@@ -320,7 +302,7 @@ window.addEventListener('hashchange',show);show();
 const toast=document.getElementById('toast');let tt;
 const say=m=>{toast.textContent=m;toast.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>toast.classList.remove('on'),3200)};
 const taxi=document.getElementById('taxi');
-const cp=v=>{(navigator.clipboard?navigator.clipboard.writeText(v):Promise.reject()).then(()=>say('복사됨: '+v)).catch(()=>{const t=document.createElement('textarea');t.value=v;document.body.appendChild(t);t.select();try{document.execCommand('copy');say('복사됨: '+v)}catch(_){}t.remove()})};
+const cp=(v,m)=>{(navigator.clipboard?navigator.clipboard.writeText(v):Promise.reject()).then(()=>say(m||'복사됨: '+v)).catch(()=>{const t=document.createElement('textarea');t.value=v;document.body.appendChild(t);t.select();try{document.execCommand('copy');say(m||'복사됨: '+v)}catch(_){}t.remove()})};
 // 앱 링크: 같은 창에서 scheme 호출 → 1.5초 안에 페이지가 숨겨지지 않으면 앱이 없다고 보고 웹 링크(없으면 안내)로
 const openApp=(app,web,fail)=>{
  let gone=false;const hid=()=>{if(document.hidden)gone=true};const ph=()=>{gone=true};
@@ -337,17 +319,16 @@ document.addEventListener('click',e=>{
  const c=e.target.closest('[data-copy]');
  if(c){const v=c.dataset.copy;(navigator.clipboard?navigator.clipboard.writeText(v):Promise.reject()).then(()=>say('복사했어요: '+v)).catch(()=>{const t=document.createElement('textarea');t.value=v;document.body.appendChild(t);t.select();try{document.execCommand('copy');say('복사했어요')}catch(_){say(v)}t.remove()})}
  const dd=e.target.closest('[data-didi]');
- if(dd){const v=dd.dataset.didi;document.getElementById('dName').textContent=v;cp(v);document.getElementById('didi').classList.add('on')}
+ if(dd){const v=dd.dataset.didi;
+  // diditaxi:// 는 DiDi 공식 문서로 확인되지 않은 scheme(커뮤니티 목록 기준). 목적지 파라미터도 미확인이라 앱만 열고 붙여넣기 안내
+  if(IOS0||AND0){cp(v,'「'+v+'」 복사됨 · DiDi 목적지 칸에 붙여넣기');openApp('diditaxi://','','DiDi 앱이 안 열렸어요 · 앱 설치를 확인해 주세요 (목적지는 복사돼 있어요)')}
+  else cp(v,'「'+v+'」 복사됨 · DiDi는 휴대폰에서 열려요')}
  const x=e.target.closest('[data-taxi]');
  if(x){const [to,ad]=x.dataset.taxi.split('|');document.getElementById('taxiTo').textContent=to;document.getElementById('taxiAd').textContent=(ad&&ad!==to)?ad:'';
   taxi.querySelector('.say').style.display=ad===''?'none':'';taxi.classList.add('on')}
 });
-const didi=document.getElementById('didi');
-document.getElementById('dClose').addEventListener('click',()=>didi.classList.remove('on'));
-document.getElementById('dCopy').addEventListener('click',()=>cp(document.getElementById('dName').textContent));
-didi.addEventListener('click',e=>{if(e.target===didi)didi.classList.remove('on')});
 document.getElementById('taxiClose').addEventListener('click',()=>taxi.classList.remove('on'));
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){taxi.classList.remove('on');didi.classList.remove('on')}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')taxi.classList.remove('on')});
 }
 </script>
 </body>
