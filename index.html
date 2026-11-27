@@ -2,335 +2,546 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f5f3ef" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#131517" media="(prefers-color-scheme: dark)">
+<meta name="format-detection" content="telephone=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="충칭 여행">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f766e'/%3E%3Cpath d='M10 44h44M14 44V26h8v18M26 44V16h10v28M40 44V24h10v20' stroke='%23fff' stroke-width='4' fill='none'/%3E%3C/svg%3E">
 <title>충칭 여행 가이드</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;800&family=Noto+Serif+SC:wght@600;900&display=swap" rel="stylesheet">
 <style>
-/* VOICE: 친구가 만들어 준 현장용 여행 수첩 — 빠르고 확실하게, 밤의 산성(山城)처럼 따뜻하게
-   IDEA: 충칭 훠궈집 메뉴판 + 지하철 노선표. 장소마다 '주문표'처럼 버튼이 줄지어 있다
-   PICTURE: 겹겹이 쌓인 산비탈 빌딩, 건물을 뚫고 지나가는 모노레일, 강 위의 케이블카
-   COLOUR and TYPE: 훠궈 고추빨강 필드 + 숯검정, 강물 청록 포인트 / Noto Serif SC(중국어 지명) + Noto Sans KR
-   LAYOUT: 상단 그림 밴드, 숙소 카드, 날짜 탭, 날짜별 시간표(큰 시각) + 장소 카드, 준비물·회화·긴급 */
-:root{color-scheme:light dark;--bg:light-dark(#fbf6f1,#161211);--card:light-dark(#fff,#211b19);--ink:light-dark(#1d1615,#f4ece8);--mute:light-dark(#6d5f5a,#b3a49e);--red:#c8281e;--red2:light-dark(#fde7e3,#3a1714);--teal:light-dark(#0f7a78,#4fc2bd);--line:light-dark(#eadcd5,#3a302d)}
-:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+/* 글꼴은 기기 기본 글꼴(Google Fonts는 중국에서 막혀 로딩이 멈출 수 있음) */
+:root{color-scheme:light dark;
+ --bg:#f5f3ef;--card:#fff;--ink:#1d2125;--mute:#6a7079;--line:#e7e3dc;--soft:#efece6;
+ --acc:#0f766e;--acc-ink:#fff;--acc-soft:#e3f2ef;--time:#b4580b;--now:#d97706;
+ --kr:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",system-ui,sans-serif;
+ --zh:"PingFang SC","Hiragino Sans GB","Noto Sans SC","Microsoft YaHei",sans-serif}
+@media (prefers-color-scheme:dark){:root{
+ --bg:#131517;--card:#1c1f22;--ink:#eceef0;--mute:#9aa1a9;--line:#2b2f34;--soft:#23272b;
+ --acc:#5fd3bf;--acc-ink:#0b1513;--acc-soft:#173430;--time:#f0a95a;--now:#fbbf24}}
 *{box-sizing:border-box;min-width:0}
 [hidden]{display:none!important}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Noto Sans KR",system-ui,sans-serif;overflow-x:clip}
-.zh{font-family:"Noto Serif SC","Songti SC",serif}
-.band{padding:clamp(20px,4vw,48px) max(5vw,16px)}
-.wrap{max-width:1000px;margin:0 auto}
-header{background:var(--red);color:#fff;padding-bottom:0}
-header h1{font-size:clamp(32px,7vw,52px);line-height:1.05;margin:0 0 6px;text-wrap:balance}
-header p{margin:0;opacity:.92}
-.hero{display:block;width:100%;height:auto;margin-top:18px}
-.hotel{margin-top:-1px;background:#1d1615;color:#f4ece8}
-.hotel .wrap{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center}
-.hotel b{font-size:17px}.hotel .zh{font-size:20px;display:block}
-nav{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
-nav .wrap{display:flex;gap:6px;overflow-x:auto;padding:8px max(5vw,16px)}
-nav a{flex:none;text-decoration:none;color:var(--ink);padding:10px 14px;border-radius:999px;font-weight:600;font-size:15px;min-height:44px;display:flex;align-items:center}
-nav a[aria-current=true]{background:var(--red);color:#fff}
-.btn{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:8px 13px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:600 14px "Noto Sans KR",sans-serif;text-decoration:none;cursor:pointer}
-.btn.r{background:var(--red);border-color:var(--red);color:#fff}
-.btn.t{color:var(--teal)}
-.acts.main{flex-wrap:nowrap}.acts.main .btn{flex:1 1 0;justify-content:center;min-height:50px;font-size:15px}
-.acts.sub{gap:6px;margin-top:-2px}.btn.s{min-height:40px;padding:6px 11px;font-size:13px;color:var(--mute)}
-.btn:focus-visible,nav a:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
-.day{display:none}.day.on{display:block}
-.dayhead h2{font-size:clamp(26px,5vw,36px);line-height:1.1;margin:0 0 4px}
-.dayhead p{margin:0;color:var(--mute)}
-.stop{display:grid;grid-template-columns:72px minmax(0,1fr);gap:14px;padding:20px 0;border-bottom:1px solid var(--line)}
-.time{font-weight:800;font-size:20px;color:var(--red);white-space:nowrap;line-height:1.2}
-.stop h3{margin:0;font-size:20px;line-height:1.25}
-.stop h3 .zh{display:block;font-size:17px;color:var(--mute);font-weight:600}
-.stop p{margin:6px 0}
-.how{background:var(--red2);border-radius:12px;padding:10px 12px;margin:10px 0;font-size:15px}
-.how b{color:var(--red)}
-.acts{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
-.eat{margin-top:8px}
-.eat summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center;color:var(--teal)}
-.eat ul{margin:4px 0 0;padding-left:18px}.eat li{margin:6px 0}
-.eat a{color:var(--teal)}
-.tip{font-size:14px;color:var(--mute)}
-.alt{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:22px}
-.alt h4{margin:0 0 8px;font-size:18px}
-.altItem{padding:12px 0;border-top:1px solid var(--line)}.altItem p{margin:4px 0}.altItem .zh{color:var(--mute)}
-.note{font-size:14px;color:var(--mute);padding:8px max(5vw,16px) 0;max-width:1000px;margin:0 auto}
-.note button{min-height:36px;padding:4px 10px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:14px}
-.box{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
-.box h3{margin:0 0 8px}
-table{width:100%;border-collapse:collapse}td{padding:8px 4px;border-bottom:1px solid var(--line);vertical-align:top}
-.warn{border-left:4px solid var(--red);background:var(--red2);padding:12px 14px;border-radius:8px;margin:14px 0}
-#taxi{position:fixed;inset:0;z-index:20;background:#fff;color:#111;display:none;flex-direction:column;justify-content:center;padding:24px;text-align:center}
-#taxi.on{display:flex}
-#taxi .say{font-size:22px;margin-bottom:12px}
-#taxi .to{font:900 clamp(36px,10vw,76px)/1.15 "Noto Serif SC",serif;color:#c8281e;word-break:keep-all;overflow-wrap:anywhere}
-#taxi .ad{font-size:clamp(18px,4.6vw,26px);margin-top:16px;color:#444}
-#taxi .btn{margin:28px auto 0;background:#111;color:#fff}
-#toast{position:fixed;left:50%;top:12px;transform:translateX(-50%);width:max-content;max-width:calc(100vw - 32px);text-align:center;background:#1d1615;color:#fff;padding:10px 16px;border-radius:999px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:30}
+html{-webkit-text-size-adjust:100%;scroll-padding-top:72px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 var(--kr);overflow-x:clip;-webkit-tap-highlight-color:transparent}
+.zh{font-family:var(--zh)}
+.wrap{max-width:720px;margin:0 auto;padding:0 16px}
+button{font:inherit;color:inherit}
+a{color:inherit}
+
+/* 상단 */
+.top{padding:calc(env(safe-area-inset-top) + 20px) 0 8px}
+.top h1{font-size:28px;line-height:1.15;margin:0;letter-spacing:-.02em}
+.top p{margin:4px 0 0;color:var(--mute);font-size:14px}
+.sky{display:block;width:100%;height:auto;margin:14px 0 0;color:var(--acc)}
+
+/* 숙소 카드 */
+.hotel{margin:14px 0 4px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 14px 12px}
+.hotel .lab{font-size:12px;font-weight:700;color:var(--acc);letter-spacing:.04em}
+.hotel .nm{font-size:18px;font-weight:700;margin:2px 0 0}
+.hotel .zhn{font-size:15px;color:var(--mute);margin-top:2px}
+.hotel .ad{font-size:14px;margin-top:6px;word-break:break-all}
+
+/* 버튼 */
+.row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:8px 14px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:15px;font-weight:600;text-decoration:none;cursor:pointer;white-space:nowrap}
+.btn.p{background:var(--acc);border-color:var(--acc);color:var(--acc-ink)}
+.btn.sm{min-height:36px;padding:4px 12px;font-size:13px}
+.btn:active{transform:scale(.98)}
+.btn:focus-visible,.tabs a:focus-visible,summary:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+
+/* 날짜 탭 */
+.tabs{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);-webkit-backdrop-filter:saturate(1.4) blur(12px);backdrop-filter:saturate(1.4) blur(12px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top)}
+.tabs .wrap{display:flex;gap:2px;overflow-x:auto;padding-block:8px;scrollbar-width:none}
+.tabs .wrap::-webkit-scrollbar{display:none}
+.tabs a{flex:1 0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:52px;min-height:48px;padding:4px 6px;border-radius:12px;text-decoration:none;color:var(--mute);font-size:12px;line-height:1.25}
+.tabs a b{font-size:15px;color:var(--ink)}
+.tabs a[aria-current=true]{background:var(--ink);color:var(--bg)}
+.tabs a[aria-current=true] b{color:var(--bg)}
+.tabs a .td{display:inline-block;font-size:10px;font-weight:700;color:var(--now);margin-left:2px}
+
+/* 날짜 */
+.day{display:none;padding:18px 0 8px}.day.on{display:block}
+.dh h2{font-size:24px;line-height:1.2;margin:0;letter-spacing:-.01em}
+.dh p{margin:4px 0 0;color:var(--mute);font-size:15px}
+
+/* 일정 타임라인 */
+.tl{position:relative;margin-top:16px}
+.tl::before{content:"";position:absolute;left:7px;top:8px;bottom:8px;width:2px;background:var(--line);border-radius:2px}
+.stop{position:relative;padding-left:28px;margin-bottom:14px}
+.stop::before{content:"";position:absolute;left:1px;top:20px;width:14px;height:14px;border-radius:50%;background:var(--bg);border:3px solid var(--acc)}
+.stop.now::before{background:var(--now);border-color:var(--now);box-shadow:0 0 0 4px color-mix(in srgb,var(--now) 25%,transparent)}
+.stop.past{opacity:.62}
+.sc{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px}
+.t{display:flex;align-items:center;gap:8px;font-weight:800;font-size:15px;color:var(--time);font-variant-numeric:tabular-nums}
+.badge{font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px;background:var(--now);color:#1d1205}
+.badge.nx{background:var(--acc-soft);color:var(--acc)}
+.sc h3{margin:4px 0 0;font-size:19px;line-height:1.3}
+.cz{display:inline-block;margin-top:2px;font-size:15px;color:var(--mute);background:none;border:0;padding:0;text-align:left;cursor:copy}
+.sc p{margin:8px 0 0}
+.how{margin-top:10px;font-size:14px;background:var(--soft);border-radius:12px;padding:10px 12px}
+.how b{color:var(--acc)}
+.tip{font-size:14px;color:var(--mute);margin-top:8px}
+
+/* 근처 펼치기 */
+details.near{margin-top:12px;border-top:1px solid var(--line);padding-top:4px}
+details.near summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;min-height:44px;font-weight:700;font-size:15px;color:var(--acc)}
+details.near summary::-webkit-details-marker{display:none}
+details.near summary::after{content:"";width:9px;height:9px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);margin:0 6px 4px 0;transition:transform .2s}
+details.near[open] summary::after{transform:rotate(-135deg);margin-bottom:-4px}
+.cat{font-size:12px;font-weight:800;color:var(--mute);margin:12px 0 2px;letter-spacing:.02em}
+.it{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center;padding:10px 0;border-bottom:1px dashed var(--line)}
+.it:last-child{border-bottom:0}
+.it .n{font-weight:700;font-size:15px;line-height:1.35}
+.it .n .zh{font-weight:500;color:var(--mute);font-size:14px}
+.it .d{grid-column:1;font-size:13.5px;color:var(--mute);line-height:1.45}
+.it .btn{grid-row:1/span 2;grid-column:2}
+
+/* 대안 */
+.alt h4{margin:22px 0 10px;font-size:16px}
+.alt .sc{margin-bottom:12px}
+
+/* 준비 */
+.grid{display:grid;gap:12px;margin-top:16px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 16px}
+.box h3{margin:0 0 6px;font-size:17px}
+.box ul{margin:0;padding-left:18px}.box li{margin:6px 0}
+table{width:100%;border-collapse:collapse}td{padding:8px 4px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+
+footer{color:var(--mute);font-size:13px;padding:8px 0 calc(env(safe-area-inset-bottom) + 96px)}
+
+/* 크게 보기 */
+#big{position:fixed;inset:0;z-index:20;background:#fff;color:#111;display:none;flex-direction:column;justify-content:center;align-items:center;padding:24px;text-align:center}
+#big.on{display:flex}
+#big .to{font:800 clamp(40px,12vw,80px)/1.15 var(--zh);word-break:keep-all;overflow-wrap:anywhere}
+#big .sub{font-size:20px;color:#555;margin-top:12px}
+#big .btn{margin-top:28px;background:#111;color:#fff;border-color:#111}
+
+/* 안내(위쪽: 아이폰 Safari는 아래 주소창이 화면을 덮음) */
+#toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 64px);transform:translateX(-50%);width:max-content;max-width:calc(100vw - 32px);text-align:center;background:#1d2125;color:#fff;padding:10px 16px;border-radius:16px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:30;font-size:14px;box-shadow:0 6px 24px rgba(0,0,0,.18)}
 #toast.on{opacity:1}#toast.act{pointer-events:auto}
-#toast a{display:inline-block;margin-left:10px;padding:4px 10px;border-radius:999px;background:#fff;color:#1d1615;font-weight:700;text-decoration:none}
-footer{color:var(--mute);font-size:13px}
-@media(max-width:600px){.stop{grid-template-columns:1fr;gap:4px}.hotel .wrap{grid-template-columns:1fr}}
+#toast a{display:inline-block;margin-left:10px;padding:4px 10px;border-radius:999px;background:#fff;color:#1d2125;font-weight:700;text-decoration:none}
+/* 내 주변 빠른 검색 */
+.quick{margin:12px 0 4px}
+.quick .lab{font-size:12px;font-weight:700;color:var(--mute);margin-bottom:6px}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;display:inline-flex;align-items:center;gap:4px;min-height:40px;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:14px;font-weight:600;text-decoration:none;cursor:pointer}
+.chip[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+/* 환율·체크리스트 */
+.fx{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center}
+.fx label{font-size:12px;color:var(--mute);font-weight:700}
+.fx input{width:100%;font:600 20px var(--kr);padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.fx .eq{font-size:20px;color:var(--mute);padding-top:18px}
+.rate{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:13px;color:var(--mute)}
+.rate input{width:88px;font:600 14px var(--kr);padding:6px 8px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.chk{list-style:none;padding:0!important}
+.chk li{margin:0!important}
+.chk label{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px dashed var(--line);cursor:pointer}
+.chk li:last-child label{border-bottom:0}
+.chk input{width:20px;height:20px;margin:2px 0 0;accent-color:var(--acc);flex:none}
+.chk input:checked+span{color:var(--mute);text-decoration:line-through}
+/* 맛집 모아보기 */
+.fh{margin:14px 0 6px;font-size:15px}
+.fh small{color:var(--mute);font-weight:500}
+.flist{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:2px 14px}
+
+/* 넓은 화면(아이폰 듀오 펼친 화면·아이패드) */
+@media (min-width:640px){
+ .wrap{padding:0 24px}
+ .near .items,.flist .items{display:grid;grid-template-columns:1fr 1fr;column-gap:20px}
+ .alt .altg{display:grid;grid-template-columns:1fr 1fr;gap:12px}.alt .altg .sc{margin:0}
+ .grid{grid-template-columns:1fr 1fr}
+ .top h1{font-size:32px}
+}
+@media (min-width:980px){
+ .layout{display:grid;grid-template-columns:360px minmax(0,1fr);gap:8px;max-width:1240px;margin:0 auto}
+ .layout>.top{position:sticky;top:0;align-self:start;max-height:100vh;overflow:auto}
+ .layout>.top .wrap{padding-right:0}
+ .layout>.top .chips{flex-wrap:wrap;overflow:visible}
+ .content .wrap{max-width:none}
+}
+/* 아주 좁은 화면(듀오 바깥 화면 등) */
+@media (max-width:360px){
+ body{font-size:15px}.wrap{padding:0 12px}
+ .btn{padding:8px 11px;font-size:14px}
+ .sc{padding:12px}.stop{padding-left:24px}
+ .tabs a{min-width:56px;padding:4px 8px}
+}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 @keyframes ride{from{transform:translateX(-120px)}to{transform:translateX(980px)}}
-.train{animation:ride 9s linear infinite}
+.train{animation:ride 10s linear infinite}
 </style>
 </head>
 <body>
-<header class="band">
- <div class="wrap">
-  <h1>충칭 3박 4일</h1>
-  <p>11월 27일(금) – 30일(월) · 날짜별 동선, 지도, DiDi 호출, 맛집을 한 페이지에</p>
-  <svg class="hero" viewBox="0 0 900 260" role="img" aria-label="산비탈 빌딩 사이로 건물을 통과하는 모노레일과 강 위 케이블카">
-   <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8f1c15"/><stop offset="1" stop-color="#e2553f"/></linearGradient>
-   <linearGradient id="riv" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1f6f6c"/><stop offset="1" stop-color="#0d3d3c"/></linearGradient></defs>
-   <rect width="900" height="260" rx="18" fill="url(#sky)"/>
-   <circle cx="760" cy="62" r="26" fill="#ffd9c9" opacity=".85"/>
-   <path d="M0 150 Q120 90 230 120 T470 100 T700 118 T900 96 V260 H0Z" fill="#7a1711" opacity=".7"/>
-   <g fill="#3b0d0a">
-    <rect x="40" y="96" width="46" height="110"/><rect x="96" y="70" width="38" height="136"/><rect x="146" y="110" width="60" height="96"/>
-    <rect x="250" y="60" width="70" height="146"/><rect x="330" y="88" width="44" height="118"/><rect x="560" y="74" width="54" height="132"/>
-    <rect x="624" y="40" width="34" height="166"/><rect x="668" y="92" width="62" height="114"/><rect x="760" y="104" width="48" height="102"/><rect x="818" y="80" width="50" height="126"/>
-   </g>
-   <g fill="#ffcf7a" opacity=".85">
-    <rect x="104" y="84" width="6" height="6"/><rect x="118" y="100" width="6" height="6"/><rect x="262" y="76" width="6" height="6"/><rect x="290" y="96" width="6" height="6"/><rect x="304" y="120" width="6" height="6"/><rect x="636" y="58" width="6" height="6"/><rect x="644" y="90" width="6" height="6"/><rect x="680" y="110" width="6" height="6"/><rect x="830" y="98" width="6" height="6"/>
-   </g>
-   <rect x="400" y="98" width="120" height="108" fill="#2a0907"/>
-   <rect x="400" y="140" width="120" height="22" fill="#e2553f" opacity=".35"/>
-   <line x1="0" y1="162" x2="900" y2="162" stroke="#1d1615" stroke-width="5"/>
-   <g class="train"><rect x="0" y="142" width="110" height="18" rx="7" fill="#f4ece8"/><rect x="8" y="146" width="94" height="6" fill="#0f7a78"/></g>
-   <path d="M0 206 H900 V260 H0Z" fill="url(#riv)"/>
-   <path d="M30 222 H260 M420 236 H700 M560 216 H860" stroke="#7fd0cb" stroke-width="2" opacity=".5"/>
-   <line x1="610" y1="40" x2="900" y2="150" stroke="#1d1615" stroke-width="2"/>
-   <g transform="translate(760 98)"><line x1="0" y1="0" x2="0" y2="16" stroke="#1d1615" stroke-width="2"/><rect x="-18" y="16" width="36" height="22" rx="4" fill="#c8281e" stroke="#fff" stroke-width="2"/></g>
-  </svg>
- </div>
-</header>
-
-<section class="hotel band" style="padding-block:16px">
- <div class="wrap">
-  <div><b>숙소 · Nuanyu Apartment</b><span class="zh">暖余·江景民宿 · 东和湾 C栋</span><span class="zh" style="font-size:16px">重庆市渝中区朝千路26号东和湾C栋</span><span class="tip" style="color:#b3a49e">26 Chaoqian Rd · 소십자(小什字)~차오톈먼 사이, 해방비·홍야동 걸어서 가는 위치</span></div>
-  <div class="acts" style="margin:0">
-   <button class="btn r" data-didi="暖余·江景民宿(重庆解放碑洪崖洞店)">🚖 숙소로 DiDi</button>
-   <a class="btn" id="hotelAmap" data-name="重庆市渝中区朝千路26号东和湾C栋">📍 Amap</a>
-   <a class="btn" id="hotelBaidu" data-name="重庆市渝中区朝千路26号东和湾C栋">📍 바이두</a>
+<div class="layout">
+<header class="top"><div class="wrap">
+ <h1>충칭 3박 4일</h1>
+ <p>11월 27일(금) – 30일(월) · 일정, 지도, 근처 맛집·카페·할 거리</p>
+ <svg class="sky" viewBox="0 0 900 150" role="img" aria-label="산비탈 빌딩 사이를 지나는 모노레일과 강 위 케이블카">
+  <rect width="900" height="150" rx="18" fill="currentColor" opacity=".08"/>
+  <g fill="currentColor" opacity=".28">
+   <rect x="40" y="46" width="46" height="74"/><rect x="96" y="26" width="38" height="94"/><rect x="146" y="60" width="60" height="60"/>
+   <rect x="250" y="20" width="70" height="100"/><rect x="330" y="44" width="44" height="76"/><rect x="400" y="54" width="120" height="66"/>
+   <rect x="560" y="34" width="54" height="86"/><rect x="624" y="10" width="34" height="110"/><rect x="668" y="50" width="62" height="70"/><rect x="760" y="60" width="48" height="60"/><rect x="818" y="40" width="50" height="80"/>
+  </g>
+  <line x1="0" y1="96" x2="900" y2="96" stroke="currentColor" stroke-width="4" opacity=".5"/>
+  <g class="train"><rect x="0" y="80" width="110" height="14" rx="6" fill="currentColor"/></g>
+  <rect y="120" width="900" height="30" fill="currentColor" opacity=".18"/>
+  <line x1="600" y1="14" x2="900" y2="86" stroke="currentColor" stroke-width="2" opacity=".6"/>
+  <g transform="translate(760 52)"><line x1="0" y1="0" x2="0" y2="12" stroke="currentColor" stroke-width="2" opacity=".6"/><rect x="-16" y="12" width="32" height="18" rx="4" fill="currentColor"/></g>
+ </svg>
+ <section class="hotel" aria-label="숙소">
+  <div class="lab">숙소</div>
+  <div class="nm">Nuanyu Apartment · 东和湾 C栋</div>
+  <div class="zhn zh">暖余·江景民宿(重庆解放碑洪崖洞店)</div>
+  <div class="ad zh">重庆市渝中区朝千路26号东和湾C栋</div>
+  <div class="row">
+   <a class="btn p" id="hotelAmap" data-name="重庆市渝中区朝千路26号东和湾C栋">📍 Amap에서 보기</a>
+   <button class="btn" data-copy="暖余·江景民宿(重庆解放碑洪崖洞店)" data-msg="DiDi·Amap 검색창에 붙여넣기">이름 복사</button>
    <button class="btn" data-copy="重庆市渝中区朝千路26号东和湾C栋">주소 복사</button>
   </div>
- </div>
-</section>
+ </section>
+ <div class="quick"><div class="lab">내 주변 빠른 검색 (Amap)</div><div class="chips" id="quick"></div></div>
+</div></header>
+<div class="content">
 
-<nav><div class="wrap" id="tabs"></div></nav>
-<div class="note" id="note"><b>🚖 DiDi 호출</b> 목적지 이름이 복사되고 DiDi가 열려요 → 목적지 칸에 붙여넣기 · <b>📍 Amap·바이두</b> 그 장소를 지도 앱에 띄워요(길찾기는 앱에서) · 앱이 안 열리면 위에 뜨는 「웹 지도로 열기」를 누르세요</div>
-<main class="band"><div class="wrap" id="days"></div></main>
-<footer class="band"><div class="wrap">이동 시간과 요금은 대략적인 값이에요. 운영 시간은 현장 사정으로 바뀔 수 있으니 출발 전에 Amap에서 한 번 더 확인하세요.</div></footer>
+<nav class="tabs" aria-label="날짜"><div class="wrap" id="tabs"></div></nav>
+<main class="wrap" id="days"></main>
+<footer class="wrap">이동 시간·요금·영업시간은 대략적인 값이에요. 출발 전에 Amap에서 한 번 더 확인하세요. 중국어 이름을 누르면 복사돼요.</footer>
+</div></div>
 
-<div id="taxi" role="dialog" aria-modal="true" aria-label="택시 기사에게 보여주기">
- <div class="say zh">师傅您好，请送我到：</div>
- <div class="to" id="taxiTo"></div>
- <div class="ad zh" id="taxiAd"></div>
- <div class="say zh" style="margin-top:20px;font-size:18px">谢谢！</div>
- <button class="btn" id="taxiClose">닫기</button>
+<div id="big" role="dialog" aria-modal="true" aria-label="크게 보기">
+ <div class="to" id="bigTo"></div><div class="sub" id="bigSub"></div>
+ <button class="btn" id="bigClose">닫기</button>
 </div>
 <div id="toast" role="status"></div>
 
 <script>
 {
-const H='重庆市渝中区朝千路26号';
-// DiDi 검색창에 붙여넣을 이름: 검색 결과에서 하나로 좁혀지는 POI 이름(지명이 넓거나 일반적인 곳만 바꿈)
-const DIDI={'朝千路26号':'暖余·江景民宿(重庆解放碑洪崖洞店)','解放碑':'人民解放纪念碑','洪崖洞':'洪崖洞民俗风貌区','山城巷':'山城巷传统风貌区',
- '小什字':'小什字地铁站','南滨路':'弹子石老街','来福士探索舱':'重庆来福士广场','重庆江北国际机场T3航站楼':'重庆江北国际机场T3航站楼'};
-const dn=q=>DIDI[q]||q;
 const enc=encodeURIComponent;
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const H2='重庆市渝中区朝千路26号东和湾C栋';
 const IOS0=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
-const AND0=/Android/.test(navigator.userAgent);
-const IOS=IOS0&&!AND0,AND=AND0;
-// 각 링크는 {app, web}. app이 비어 있으면(데스크톱·웹 모드) 웹 링크만 새 창으로 연다
+const AND=/Android/.test(navigator.userAgent),IOS=IOS0&&!AND;
+// Amap 장소 검색(공식 URI 문서): iOS iosamap://poi, Android androidamap://poi, 그 밖은 웹 uri.amap.com
 const amap=q=>({
  app:IOS?`iosamap://poi?sourceApplication=cqtrip&name=${enc(q)}&dev=0`
   :AND?`androidamap://poi?sourceApplication=cqtrip&keywords=${enc(q)}&dev=0`:'',
  web:`https://uri.amap.com/search?keyword=${enc(q)}&city=${enc('重庆')}&callnative=1`});
-// 바이두 장소 검색(공식 URI 문서): iOS baidumap://map/place/search, Android 웹페이지는 bdapp://, 웹은 api.map.baidu.com/place/search
-const bq=q=>`query=${enc(q)}&region=${enc('重庆')}`;
-const baidu=q=>({
- app:IOS?`baidumap://map/place/search?${bq(q)}&src=ios.cqtrip.guide`
-  :AND?`bdapp://map/place/search?${bq(q)}&src=andr.cqtrip.guide`:'',
- web:`https://api.map.baidu.com/place/search?${bq(q)}&output=html&src=webapp.cqtrip.guide`});
-// 장소 버튼: DiDi 호출 + 그 장소를 Amap·바이두 앱에 띄우기(길찾기는 앱에서 직접)
-const acts=(q,ad)=>{const e=esc(q);return `<div class="acts main">
-  <button class="btn r" data-didi="${esc(dn(q))}">🚖 DiDi 호출</button>
-  <a class="btn" data-name="${e}" ${L(amap(q))}>📍 Amap</a>
-  <a class="btn" data-name="${e}" ${L(baidu(q))}>📍 바이두</a></div>
- <div class="acts sub">
-  <button class="btn s" data-copy="${esc(ad)}">주소 복사</button>
-  <a target="_blank" rel="noopener" class="btn s" href="${pics(q)}">사진</a></div>`};
 const L=o=>o.app?`href="${esc(o.app)}" data-app="1" data-web="${esc(o.web)}"`:`href="${esc(o.web)}" target="_blank" rel="noopener"`;
-const setL=(el,o)=>{if(o.app){el.href=o.app;el.dataset.app='1';el.dataset.web=o.web;el.removeAttribute('target');el.removeAttribute('rel')}else{el.href=o.web;delete el.dataset.app;delete el.dataset.web;el.target='_blank';el.rel='noopener'}};
-const pics=q=>`https://image.baidu.com/search/index?tn=baiduimage&word=${enc(q)}`;
-const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const setL=(el,o)=>{if(o.app){el.href=o.app;el.dataset.app='1';el.dataset.web=o.web}else{el.href=o.web;el.target='_blank';el.rel='noopener'}};
 
-const food=(n,z,d)=>({n,z,d});
-const A=(k,z,ad,d,m)=>({k,z,ad,d,m});
-const S=(t,k,z,ad,desc,how,mode,eat,tip)=>({t,k,z,ad,desc,how,eat:eat||[],tip,mode});
+/* ── 근처 맛집·카페·할 거리 ── 조사 결과(출처는 저장소 README가 아닌 각 항목 src에 보관) */
+const NEAR={"解放碑":[{"cat":"do","ko":"해방비 (인민해방기념비)","zh":"人民解放纪念碑","note":"충칭 도심의 상징 · 보행가 산책과 야경","walk":""},
+ {"cat":"snack","ko":"바이 먹자골목","zh":"八一好吃街","note":"鬼酥肉·玫瑰糍粑冰粉 등 길거리 간식 · 1인 10–20元","walk":"해방비에서 도보 3분"},
+ {"cat":"food","ko":"하오유라이 쏸라펀","zh":"好又来酸辣粉(好吃街店)","note":"새콤매콤 당면 명물 · 약 11元 · 줄 서는 곳","walk":"도보 3분"},
+ {"cat":"food","ko":"화스 완짜몐","zh":"花市豌杂面(民生路店)","note":"완두·고기볶음 비빔면 · 약 17元 · 07–20시","walk":"도보 8분"},
+ {"cat":"food","ko":"저우스슝 따다오야오펜 훠궈","zh":"周师兄大刀腰片火锅(解放碑总店)","note":"큼직한 돼지콩팥 大刀腰片이 간판 · 1인 약 78元","walk":"도보 8분"},
+ {"cat":"food","ko":"바장쥔 비물질문화유산 훠궈","zh":"巴将军·非遗原味火锅(解放碑店)","note":"정통 충칭 노화로 훠궈 · 1인 약 76元","walk":"도보 5분"},
+ {"cat":"food","ko":"산청 양러우관 (옛 충칭 요리)","zh":"山城羊肉馆·老重庆川菜(解放碑总店)","note":"양고기·옛 충칭 쓰촨 요리 · 1인 약 61元","walk":"도보 8분"},
+ {"cat":"food","ko":"주주 더우화관 (豆花饭)","zh":"九九豆花馆(解放碑步行街店)","note":"두부푸딩+밥 한 끼 · 약 26元","walk":"도보 5분"}],
+"洪崖洞":[{"cat":"do","ko":"홍야동 11층 도시 발코니","zh":"洪崖洞城市阳台","note":"무료 전망대(沧白路 쪽 입구) · 점등 후 야경","walk":""},
+ {"cat":"snack","ko":"홍야동 4층 먹거리 거리","zh":"洪崖洞","note":"관광지 가격 · 구경하며 간단히만","walk":""},
+ {"cat":"food","ko":"양지룽푸 장후차이 (본점)","zh":"杨记隆府·江湖菜(重庆总店)","note":"부두 테마 江湖菜 · 辣子鸡·大麻圆 · 1인 약 80元","walk":"도보 5분"},
+ {"cat":"food","ko":"페이제 라오훠궈 (홍야동점)","zh":"珮姐老火锅(洪崖洞店)","note":"인기 훠궈, 대기 김 · 1인 약 78元","walk":"도보 8분"},
+ {"cat":"food","ko":"차오지 리반덩 몐 (본점)","zh":"超级李板凳·面(总店)","note":"현지 면집 · 红烧牛肉面 · 약 18元","walk":"도보 10분"},
+ {"cat":"do","ko":"다이자샹 절벽 산책로","zh":"戴家巷崖壁步道","note":"홍야동 옆 절벽 공중 산책로 · 사람 적고 뷰 좋음 · 무료","walk":"도보 10분"}],
+"千厮门嘉陵江大桥":[{"cat":"do","ko":"천사문대교 보행로","zh":"千厮门嘉陵江大桥","note":"다리 위에서 홍야동 야경 · 일몰 30분 뒤가 베스트","walk":"홍야동에서 도보 5분"},
+ {"cat":"do","ko":"충칭대극원 강변 (홍야동 정면 포토존)","zh":"重庆大剧院","note":"홍야동+대교 한 컷 명당 · 6호선 大剧院역","walk":"다리 건너 도보 15분"},
+ {"cat":"do","ko":"래플스 탐색창 전망대","zh":"来福士探索舱","note":"250m 높이 수평 전망대 · 약 120元 · 10–22시","walk":"다리에서 도보 15분"}],
+"朝天门广场":[{"cat":"do","ko":"래플스 탐색창 전망대","zh":"来福士探索舱","note":"250m 높이 수평 전망대 · 약 120元 · 10–22시(변동 가능)","walk":"숙소에서 도보 10분"},
+ {"cat":"do","ko":"차오톈먼 광장 (두 강 합류)","zh":"朝天门广场","note":"장강·자링강이 만나는 곳 · 무료","walk":"숙소에서 도보 10분"},
+ {"cat":"food","ko":"윈성 쓰촨요리 강뷰 레스토랑","zh":"芸笙·川菜名門江景餐厅(来福士店)","note":"강 뷰 쓰촨 요리 · 1인 약 84元","walk":"래플스 안"},
+ {"cat":"food","ko":"페이제 훠궈 (래플스점)","zh":"珮姐重庆火锅(来福士店)","note":"창가 자리 강 뷰 · 1인 약 86元 · 영업 Amap 확인","walk":"래플스 L2"},
+ {"cat":"cafe","ko":"인터컨티넨탈 항바 (수정 회랑)","zh":"重庆来福士洲际酒店·航吧","note":"고공 회랑의 바·애프터눈티 · 1인 약 165元","walk":"래플스 안"}],
+"戴家巷崖壁步道":[{"cat":"do","ko":"다이자샹 절벽 산책로","zh":"戴家巷崖壁步道","note":"750m(공중 구간 300m) · 자링강·江北嘴 조망 · 무료","walk":""},
+ {"cat":"do","ko":"다이자샹 옛 골목","zh":"戴家巷","note":"산책로 위쪽 끝 옛 거리 · 작은 가게들","walk":"산책로에서 바로"},
+ {"cat":"food","ko":"베이부위안 라오훠궈","zh":"北步园老火锅(戴家巷店)","note":"동네 노화로 훠궈 · 1인 약 82元","walk":"도보 5분"},
+ {"cat":"food","ko":"양지룽푸 장후차이 (본점)","zh":"杨记隆府·江湖菜(重庆总店)","note":"辣子鸡·大麻圆 · 1인 약 80元","walk":"도보 10분"}],
+"小什字":[{"cat":"do","ko":"뤄한쓰 (나한사)","zh":"罗汉寺","note":"도심 속 천년 고찰 · 아침 산책 코스","walk":"숙소에서 도보 5분"},
+ {"cat":"food","ko":"옌징 샤오몐 (차오톈먼점)","zh":"眼镜小面(朝天门店)","note":"아침 小面 · 약 21元","walk":"도보 5분"},
+ {"cat":"food","ko":"산청 라오탕커우 1636 (옛 충칭 요리)","zh":"山城老堂口·1636重庆老菜(解放碑洪崖洞店)","note":"옛 충칭 가정식 · 1인 약 75元","walk":"도보 7분"},
+ {"cat":"night","ko":"헤이훠 촨촨 (본점)","zh":"嘿火串串火锅(总店)","note":"꼬치 훠궈 串串 · 야식용 · 1인 약 63元","walk":"도보 7분"},
+ {"cat":"do","ko":"바이샹쥐 · 바이샹제","zh":"白象居","note":"드라마 촬영지 산비탈 아파트 · 케이블카 포토존","walk":"도보 8분"}],
+"白象居 / 白象街":[{"cat":"do","ko":"바이샹쥐 (드라마 촬영지 아파트)","zh":"白象居","note":"「은밀한 구석」 촬영지 · 3·4동 사이 케이블카 포토존 · 거주지라 조용히","walk":""},
+ {"cat":"do","ko":"바이샹제 역사 거리","zh":"白象街","note":"개항기 근대 건축 재생 거리 · 산책·사진","walk":"바로 옆"},
+ {"cat":"cafe","ko":"스타벅스 바이샹제점","zh":"星巴克(白象街店)","note":"민국풍 건물 스타벅스","walk":"도보 2분"},
+ {"cat":"do","ko":"후광회관","zh":"重庆湖广会馆","note":"청대 상인 회관 고건축","walk":"도보 10분"},
+ {"cat":"food","ko":"판장후 장후차이","zh":"饭江湖·江湖菜(湖广会馆店)","note":"충칭 江湖菜 · 1인 약 64元","walk":"도보 10분"}],
+"长江索道北站":[{"cat":"do","ko":"바이샹쥐 (케이블카 포토존)","zh":"白象居","note":"케이블카가 아파트 사이로 지나가는 장면","walk":"도보 3분"},
+ {"cat":"do","ko":"바이샹제 역사 거리","zh":"白象街","note":"근대 건축 재생 거리","walk":"도보 3분"},
+ {"cat":"cafe","ko":"스타벅스 바이샹제점","zh":"星巴克(白象街店)","note":"민국풍 건물 · 탑승 대기 전 커피","walk":"도보 5분"},
+ {"cat":"food","ko":"주주 더우화관 (豆花饭)","zh":"九九豆花馆(解放碑步行街店)","note":"두부푸딩+밥 한 끼 · 약 26元","walk":"도보 5분"}],
+"李子坝轻轨站观景平台":[{"cat":"food","ko":"리쯔바 량산지(량산 닭 훠궈)","zh":"李子坝梁山鸡","note":"약선 마라 닭 훠궈+토란 · 10–22시 · 1인 60–100元","walk":"도보 3분"},
+ {"cat":"do","ko":"리쯔바 항일유적공원","zh":"李子坝抗战遗址公园","note":"량산지 맞은편, 민국 시기 저택 유적 산책","walk":"도보 3분"}],
+"鹅岭公园 / 鹅岭二厂":[{"cat":"do","ko":"얼창 문화단지 · 31동 옥상","zh":"鹅岭二厂文创公园","note":"영화 「从你的全世界路过」 촬영 옥상, 단지 최고 전망","walk":""},
+ {"cat":"do","ko":"어링공원 칸성러우 전망탑","zh":"鹅岭公园瞰胜楼","note":"공원 안 전망탑, 두 강 360° 조망","walk":"도보 5분"},
+ {"cat":"cafe","ko":"ONCE 카페 (절벽 테라스)","zh":"ONCE咖啡屋","note":"단지 모퉁이 절벽 테라스, 菜园坝대교 뷰","walk":"단지 안"},
+ {"cat":"cafe","ko":"Ugly Monkey 커피","zh":"奇丑的猴子","note":"입구 2층, 스페셜티 커피·굿즈","walk":"단지 안"},
+ {"cat":"night","ko":"스카이라인 라운지 (루프톱 인피니티풀)","zh":"Sky-Line Lounge无边际泳池餐厅(二厂文创公园店)","note":"옥상 동남아 요리·뷰 · 1인 약 117元","walk":"단지 안"},
+ {"cat":"snack","ko":"다왕 유차","zh":"大王油茶(二厂文创公园店)","note":"충칭식 油茶 간식 · 약 27元","walk":"단지 안"}],
+"十八梯传统风貌区":[{"cat":"food","ko":"스바티 덩덩몐 (본점)","zh":"十八梯邓凳面(解放碑总店)","note":"긴 의자에 앉아 먹는 豌杂面 · 저렴","walk":"도보 5분"},
+ {"cat":"food","ko":"페이제 라오훠궈 1호점","zh":"珮姐老火锅(较场口店)","note":"충칭 대표 훠궈 브랜드 첫 매장 · 웨이팅 잦음","walk":"도보 5분"},
+ {"cat":"food","ko":"둥쯔 라오훠궈 (방공호 훠궈)","zh":"洞子老火锅(十八梯店)","note":"방공호 동굴 안에서 먹는 훠궈","walk":"구역 안"},
+ {"cat":"cafe","ko":"S1949 찻집 (옥상 테라스)","zh":"S1949茶坊","note":"18계단을 내려다보는 옥상 찻집","walk":"구역 안"},
+ {"cat":"snack","ko":"더우샹스 (더우화)","zh":"豆相识","note":"소고기·싼쯔 올린 두부푸딩","walk":"구역 안"}],
+"山城巷传统风貌区":[{"cat":"food","ko":"츠지 와이포차오 (강뷰 쓰촨 요리)","zh":"慈记外婆桥·江景·川菜小吃(山城巷店)","note":"강뷰 쓰촨 가정식·간식 · 10:30–20시","walk":"골목 안"},
+ {"cat":"cafe","ko":"바상 찻집 (야외)","zh":"坝上茶馆","note":"장강 보며 盖碗茶 한 잔","walk":"골목 안"},
+ {"cat":"snack","ko":"톈덩제 유쥐 (전통 유차)","zh":"天灯街油局","note":"충칭 전통 油茶 세트","walk":"골목 안"},
+ {"cat":"do","ko":"런아이탕 옛터 (1900년 성당 건물)","zh":"仁爱堂旧址","note":"프랑스풍 옛 건물, 외관만 관람","walk":"골목 안"},
+ {"cat":"do","ko":"진마 소학교 옛터 (도서관·전시)","zh":"金马小学旧址","note":"옛 학교를 고친 도서관·미술 전시 공간","walk":"골목 안"}],
+"重庆人民大礼堂":[{"cat":"do","ko":"삼협박물관","zh":"重庆中国三峡博物馆","note":"인민대례당 맞은편 · 무료 · 여권 지참 · 월요일 휴관 여부 확인","walk":"길 건너"},
+ {"cat":"food","ko":"순수이 생선요리 (대례당점)","zh":"顺水鱼馆(大礼堂店)","note":"椒麻鱼·江团 · 영업 여부 Amap에서 재확인","walk":"도보 5분"}],
+"重庆小面":[{"cat":"food","ko":"장 라오마 차오서우·小面 (본점)","zh":"酱老麻抄手重庆小面馆(解放碑总店)","note":"民生路250号 · 老麻抄手·干溜豌杂面 · 07–24시 · 약 19元","walk":""},
+ {"cat":"food","ko":"화스 완짜몐 (민성루점)","zh":"花市豌杂面(民生路店)","note":"民生路85号 · 豌杂面 필수 · 07–20시 · 약 17元","walk":""},
+ {"cat":"food","ko":"스바티 덩덩몐 (본점)","zh":"十八梯邓凳面(解放碑总店)","note":"긴 의자에 앉아 먹는 豌杂面 · 종일 영업","walk":""},
+ {"cat":"food","ko":"친윈 라오타이포 탄탄몐","zh":"秦云老太婆摊摊面(较场口店)","note":"1908년 유래 브랜드 · 한 그릇 10元대","walk":""}],
+"磁器口古镇":[{"cat":"snack","ko":"천창인 마화 (천마화 본점)","zh":"陈昌银麻花(磁器口总店)","note":"1907년 창업 꽈배기 과자 · 시 무형문화재 · 본점은 줄이 김","walk":"고진 안"},
+ {"cat":"food","ko":"마오좡 구진 지자 (닭내장볶음)","zh":"茂庄古镇鸡杂","note":"磁器口 대표 메뉴 古镇鸡杂·毛血旺","walk":"고진 안"},
+ {"cat":"food","ko":"마팡완 66호 장후차이","zh":"马房湾66号江湖菜","note":"毛血旺·辣子鸡 · 입구 밖 무지개벽 포토존","walk":"도보 약 10분"},
+ {"cat":"food","ko":"린쯔거 라오훠궈","zh":"林资格老火锅","note":"소기름 훠궈 · 生毛肚·鸭肠 · 1인 약 57元","walk":""},
+ {"cat":"do","ko":"바오룬쓰 (보륜사)","zh":"宝轮寺","note":"약 600년 된 사찰 · 못 없이 지은 대웅전 · 5元","walk":"고진 안"},
+ {"cat":"do","ko":"중자 대원 (옛 저택)","zh":"钟家大院","note":"남북 양식을 섞은 옛 저택 · 5元","walk":"고진 안"}],
+"下浩里 / 龙门浩老街":[{"cat":"do","ko":"룽먼하오 옛 거리 (조계 양옥)","zh":"龙门浩老街","note":"하호리 맞은편 옛 양옥 거리 · 上新街역 2번 출구","walk":"도보 3분"},
+ {"cat":"do","ko":"둥수이먼 장강대교 야경","zh":"东水门长江大桥","note":"블루아워 추천 · 걸어서 장강 건너 숙소로","walk":"도보 2분"},
+ {"cat":"do","ko":"상신제 그라피티 거리","zh":"上新街多巴胺涂鸦街","note":"컬러풀한 벽화 포토존","walk":"도보 약 10분"},
+ {"cat":"food","ko":"이톈먼 라오훠궈 (하호리점)","zh":"一天门老火锅(下浩里店)","note":"吊龙牛肉·虾滑 · 鸳鸯锅 가능","walk":"도보 3분"},
+ {"cat":"cafe","ko":"싼츠탕수이 (디저트)","zh":"三匙糖水(下浩里老街店)","note":"망고·코코넛 디저트 · 약 29元","walk":"거리 안"}],
+"南滨路 / 弹子石老街":[{"cat":"do","ko":"창자후이 단쯔스 옛거리","zh":"长嘉汇弹子石老街","note":"위중반도 야경 정면 · 20:30쯤 드론쇼가 자주 열림","walk":""},
+ {"cat":"food","ko":"차오톈먼 훠궈 (강뷰 플래그십)","zh":"朝天门火锅(长嘉汇江景旗舰店)","note":"270° 강 전망 · 창가는 예약 필수 · 1인 150–200元","walk":"옛거리 안"},
+ {"cat":"food","ko":"창자 허투 훠궈 (강변점)","zh":"长嘉·河图火锅(南滨路江景店)","note":"강변 야경 훠궈 · 鲜乌鱼片·毛肚·虾滑","walk":"도보 5분"},
+ {"cat":"food","ko":"천다좡 자자 소고기","zh":"陈大壮渣渣牛肉","note":"渣渣牛肉 · 스타벅스 옆","walk":"도보 5분"},
+ {"cat":"snack","ko":"미쉐빙청 (세계 최대 매장)","zh":"蜜雪冰城 弹子石","note":"아이스크림·음료 1元부터 · 이름으로 검색","walk":"거리 안"},
+ {"cat":"do","ko":"프랑스 해군 병영 옛터","zh":"法国水师兵营","note":"개항기 서양식 건물 · 강변 산책","walk":"도보 약 10분"}],
+"观音桥":[{"cat":"do","ko":"관인차오 주제 (밤 거리)","zh":"观音桥九街","note":"충칭 밤문화 중심 · 지하철 23시쯤 끊김","walk":""},
+ {"cat":"night","ko":"쿵핑쯔 라이브쇼 (주제점)","zh":"空瓶子LIVE SHOW(九街店)","note":"라이브 공연 바","walk":"九街 안"},
+ {"cat":"night","ko":"미스터 비어 (수제맥주)","zh":"Mr.Beer啤酒先生(重庆·金科店)","note":"수제맥주 펍","walk":"九街 근처"},
+ {"cat":"food","ko":"화이포 룽제 훠궈","zh":"华一坡蓉姐火锅","note":"현지인 줄 서는 집 · 土碗卤菜","walk":""},
+ {"cat":"food","ko":"하이관 훈더우화","zh":"海关荤豆花","note":"가성비 荤豆花 한 끼","walk":""},
+ {"cat":"food","ko":"페이제 라오훠궈 (관인차오)","zh":"珮姐老火锅 观音桥","note":"충칭 대표 훠궈 · 지점명은 Amap에서 확인","walk":""}],
+"交通茶馆 / 黄桷坪":[{"cat":"cafe","ko":"자오퉁 찻집","zh":"交通茶馆","note":"30년 넘은 서민 찻집 · 盖碗茶 몇 元 · 07–19시 · 철거설 있어 출발 전 확인","walk":""},
+ {"cat":"do","ko":"황줴핑 그라피티 거리","zh":"黄桷坪涂鸦街","note":"四川美术学院 옆 대형 벽화 거리 · 무료","walk":"도보 3분"},
+ {"cat":"do","ko":"쓰촨미대 황줴핑 캠퍼스","zh":"四川美术学院(黄桷坪校区)","note":"교문·예술 거리 산책","walk":"도보 5분"},
+ {"cat":"food","ko":"거우웨이다오 라오훠궈","zh":"苟味道老火锅(黄桷坪店)","note":"소기름 훠궈 · 물소 毛肚 · 1인 약 68元","walk":"도보 5분"},
+ {"cat":"food","ko":"티칸 더우화","zh":"梯坎豆花","note":"豆花饭 · 약 31元","walk":"도보 3분"},
+ {"cat":"snack","ko":"허우류메이 쏸라펀","zh":"侯六妹酸辣粉","note":"작은 가게 · 약 10元","walk":"도보 5분"}],
+"机场T3":[{"cat":"food","ko":"룬라몐 (보안검색 전)","zh":"润拉面(T3安检前)","note":"면 요리 · 06–23시 · 도착 후 한 끼","walk":"출국장 밖"},
+ {"cat":"food","ko":"맥도날드 (보안검색 밖)","zh":"麦当劳(T3安检外店)","note":"05시부터 · 새벽 출발 대비","walk":"출국장 밖"},
+ {"cat":"cafe","ko":"야쿤 카야토스트","zh":"亚坤YaKunKayaToast","note":"T3A · 05–24시 · 토스트+커피 아침","walk":""},
+ {"cat":"cafe","ko":"더 커피 클럽","zh":"The Coffee Club","note":"T3A · 06–21:30","walk":""}]};
+const CAT={food:['🍜','식사'],snack:['🍢','간식·길거리'],cafe:['☕','카페·찻집·디저트'],do:['📸','볼거리·할 거리'],night:['🌙','밤']};
+
+const A=(k,z,ad,d,nk)=>({k,z,ad,d,nk});
+const S=(t,k,z,ad,desc,how,nk,tip)=>({t,k,z,ad,desc,how,nk,tip});
 
 const DAYS=[
-{id:'day1',tab:'1일차 · 27(금)',title:'도착 & 첫 야경',sub:'인천 14:00 → 충칭 16:55. 숙소에 짐 두고 강변 밤 산책',stops:[
+{id:'day1',date:'2026-11-27',tab:'1일차',dt:'27 금',title:'도착 & 첫 야경',sub:'인천 14:00 → 충칭 16:55. 숙소에 짐 두고 강변 밤 산책',stops:[
  S('16:55','장베이 공항 T3 도착','重庆江北国际机场T3航站楼','重庆江北国际机场T3航站楼','입국 심사 후 eSIM 켜고, DiDi(滴滴) 앱에 로그인해 두기.',
-  '<b>택시</b> 약 40–50분, 대략 70–90元 · <b>지하철</b> 10호선 → 6호선 환승 → 小什字역, 약 60분 · 짐이 있으면 택시 추천','',
-  [food('공항 안 편의점','便利店','물·간식 정도만. 저녁은 시내에서')],'공항 택시는 반드시 공식 승차장(出租车上客区)에서. 호객 기사 무시'),
+  '<b>택시</b> 약 40–50분, 대략 70–90元 · <b>지하철</b> 10호선 → 6호선 환승 → 小什字역, 약 60분 · 짐이 있으면 택시 추천','机场T3','공항 택시는 반드시 공식 승차장(出租车上客区)에서. 호객 기사 무시'),
  S('19:00','해방비 (해방비 보행가)','解放碑','重庆市渝中区解放碑步行街','충칭의 한복판. 조명 켜진 기념비와 쇼핑가, 바로 옆 바이이 먹자골목.',
-  '<b>도보</b> 숙소에서 약 10–15분','walking',
-  [food('하오유라이 쏸라펀','好又来酸辣粉','30년 넘은 새콤매콤 당면. 1인 10元대'),food('화스 완자면','花市豌杂面','완두콩+고기 소스 비빔 小面, 민생로(民生路)'),food('우 초우쇼우','吴抄手','충칭식 홍유 완탕, 중화로(中华路)'),food('바이이 먹자골목','八一好吃街','꼬치·빙펀 등 길거리 간식 모음')],'저녁 첫 끼는 가볍게 小面이나 쏸라펀으로'),
+  '<b>도보</b> 숙소에서 약 10–15분','解放碑','저녁 첫 끼는 가볍게 小面이나 쏸라펀으로'),
  S('20:30','홍야동 야경','洪崖洞','重庆市渝中区嘉陵江滨江路88号','절벽에 붙은 조각루 건물이 금빛으로 켜지는 충칭 대표 야경. 강 건너에서 볼 때가 제일 예뻐요.',
-  '<b>도보</b> 숙소에서 약 10–15분 · 가장 붐비는 시간은 20–21시','walking',
-  [food('샤오야동 제팡 라오훠궈','小崖洞街坊老火锅','홍야동 근처 노포 훠궈, 九尺坎66号'),food('홍야동 4층 거리','洪崖洞4F','관광지 가격. 구경만 하고 먹는 건 밖에서')],'정면샷은 千厮门大桥(천사문대교) 위나 건너편 江北嘴에서'),
+  '<b>도보</b> 숙소에서 약 10–15분 · 가장 붐비는 시간은 20–21시','洪崖洞','정면샷은 千厮门大桥(천사문대교) 위나 건너편 江北嘴에서'),
  S('21:30','천사문대교 → 강북 야경','千厮门嘉陵江大桥','千厮门嘉陵江大桥','홍야동 앞 다리를 걸어 건너며 반대편에서 홍야동 전경 감상. 원하면 来福士(래플스시티)까지.',
-  '<b>도보</b> 홍야동에서 바로 · 다리 건너는 데 약 15분','walking',[],'돌아올 땐 다리 다시 건너 걷거나 택시 10분')
+  '<b>도보</b> 홍야동에서 바로 · 다리 건너는 데 약 15분','千厮门嘉陵江大桥','돌아올 땐 다리 다시 건너 걷거나 택시 10분')
 ],alt:[
- A('차오톈먼 광장','朝天门广场','重庆市渝中区朝东路','피곤하면 홍야동 대신. 숙소에서 가장 가까운 두 강(장강·자링강) 합류 지점 야경.','walking'),
- A('다이자샹 절벽 산책로','戴家巷崖壁步道','重庆市渝中区戴家巷','홍야동 옆 절벽에 매달린 약 750m 산책로. 사람 적고 홍야동·천사문대교 뷰가 좋아요. 지하철 临江门역 2번 출구.','walking')]},
+ A('차오톈먼 광장','朝天门广场','重庆市渝中区朝东路','피곤하면 홍야동 대신. 숙소에서 가장 가까운 두 강(장강·자링강) 합류 지점 야경.','朝天门广场'),
+ A('다이자샹 절벽 산책로','戴家巷崖壁步道','重庆市渝中区戴家巷','홍야동 옆 절벽에 매달린 약 750m 산책로. 사람 적고 홍야동·천사문대교 뷰가 좋아요. 지하철 临江门역 2번 출구.','戴家巷崖壁步道')]},
 
-{id:'day2',tab:'2일차 · 28(토)',title:'모노레일 & 18계단',sub:'오전 서쪽(리즈바·어링), 오후 해방비 남쪽, 밤 홍야동 재방문',stops:[
+{id:'day2',date:'2026-11-28',tab:'2일차',dt:'28 토',title:'모노레일 & 18계단',sub:'오전 서쪽(리즈바·어링), 오후 해방비 남쪽, 밤 홍야동 재방문',stops:[
  S('08:30','아침: 충칭 小面','重庆小面','重庆市渝中区民生路','현지인처럼 플라스틱 의자에서 小面 한 그릇. "二两，微辣" (2량, 덜 맵게).',
-  '숙소 근처 골목 면집 아무 곳 · 동네 노포는 7–11元, 관광지 면집은 16–22元대','walking',
-  [food('라오마 초우쇼우 小面','老麻抄手重庆小面','해방비 민생로250号, 아침 7시 오픈'),food('화스 완자면','花市豌杂面','민생로85号')],'"干溜(간류)" = 국물 없는 비빔 / "提黄" = 꼬들하게'),
+  '숙소 근처 골목 면집 아무 곳 · 동네 노포는 7–11元, 관광지 면집은 16–22元대','重庆小面','"干溜(간류)" = 국물 없는 비빔 / "提黄" = 꼬들하게'),
  S('09:30','리즈바역 (건물 관통 모노레일)','李子坝轻轨站观景平台','重庆市渝中区李子坝正街','2호선 열차가 아파트 건물 6–8층을 뚫고 지나가는 장면. 길 건너 관경대(观景平台)에서 촬영.',
-  '<b>지하철</b> 临江门 또는 较场口역에서 2호선 → 李子坝, 약 15분 · <b>택시</b> 약 15분 20元 안팎','transit',
-  [food('리즈바 량산지','李子坝梁山鸡','현지에서 유명한 닭 요리 체인, 점심용')],'열차는 몇 분 간격. 관경대 계단 아래쪽이 덜 붐벼요'),
+  '<b>지하철</b> 临江门 또는 较场口역에서 2호선 → 李子坝, 약 15분 · <b>택시</b> 약 15분 20元 안팎','李子坝轻轨站观景平台','열차는 몇 분 간격. 관경대 계단 아래쪽이 덜 붐벼요'),
  S('10:30','어링공원 & 얼창','鹅岭公园 / 鹅岭二厂','重庆市渝中区鹅岭正街176号','공원 전망탑(瞰胜楼)에서 두 강과 도심 파노라마. 옆 鹅岭二厂(옛 인쇄공장 문화단지)엔 카페·소품숍.',
-  '<b>택시</b> 리즈바에서 약 5분 · <b>도보</b> 오르막 약 20분 · <b>지하철</b> 2호선 鹅岭역','walking',
-  [food('얼창 루프톱 카페','鹅岭二厂 咖啡','도심 뷰 커피 한 잔')],'공원은 무료, 전망탑은 유료(소액)'),
+  '<b>택시</b> 리즈바에서 약 5분 · <b>도보</b> 오르막 약 20분 · <b>지하철</b> 2호선 鹅岭역','鹅岭公园 / 鹅岭二厂','공원은 무료, 전망탑은 유료(소액)'),
  S('12:30','점심 & 해방비 복귀','解放碑','重庆市渝中区解放碑步行街','2호선 타고 돌아와 해방비에서 점심. 훠궈를 점심에 먹으면 저녁이 편해요.',
-  '<b>지하철</b> 2호선 鹅岭 → 临江门/较场口, 약 12분','transit',
-  [food('하오유라이 쏸라펀','好又来酸辣粉','간단히'),food('훠궈 노포 찾는 법','老火锅','관광지 입구·화려한 인테리어 말고, 동네 아저씨들 북적이는 곳')],'훠궈 주문: "微辣(웨이라)", "鸳鸯锅(원앙탕)"는 맵지 않은 국물 반반'),
+  '<b>지하철</b> 2호선 鹅岭 → 临江门/较场口, 약 12분','解放碑','훠궈 주문: "微辣(웨이라)", "鸳鸯锅(원앙탕)"는 맵지 않은 국물 반반'),
  S('14:30','18계단 (스바티)','十八梯传统风貌区','重庆市渝中区较场口十八梯','해방비 아래로 이어지는 옛 계단 골목을 복원한 거리. 사진·간식·찻집.',
-  '<b>도보</b> 해방비에서 약 10분 (较场口 방향 내리막)','walking',
-  [food('스바티 덩덩미엔','十八梯 凳凳面','작은 의자에 앉아 먹는 면'),food('페이제 라오훠궈','珮姐老火锅','충칭 유명 훠궈, 웨이팅 길 수 있음')],'계단 아래→위로 오르면 힘드니 위→아래로'),
+  '<b>도보</b> 해방비에서 약 10분 (较场口 방향 내리막)','十八梯传统风貌区','계단 아래→위로 오르면 힘드니 위→아래로'),
  S('16:00','산성항 (산청샹)','山城巷','重庆市渝中区山城巷','18계단 근처 절벽 골목. 옛 성당·찻집·장강 뷰, 훨씬 한산해요.',
-  '<b>도보</b> 18계단에서 약 10분','walking',
-  [food('산성항 찻집','山城巷 茶馆','盖碗茶 한 잔하며 장강 감상')],'현지인 추천 루트'),
+  '<b>도보</b> 18계단에서 약 10분','山城巷传统风貌区','현지인 추천 루트'),
  S('19:30','저녁 & 홍야동 2회차','洪崖洞','重庆市渝中区嘉陵江滨江路88号','어제 못 본 각도로. 4층 거리 → 1층 강변까지 엘리베이터 대신 계단으로 내려가며 구경.',
-  '<b>도보</b> 숙소에서 약 10–15분','walking',
-  [food('충칭 꼬치 훠궈','串串香','꼬치 개수로 계산, 저렴하고 재밌음')],'')
+  '<b>도보</b> 숙소에서 약 10–15분','洪崖洞','')
 ],alt:[
- A('바이샹쥐','白象居','重庆市渝中区白象街','1층으로 들어가 꼭대기층으로 나오는 산비탈 옛 아파트. 숙소에서 가깝고 장강·케이블카 뷰.','walking'),
- A('인민대례당','重庆人民大礼堂','重庆市渝中区人民路173号','궁전 같은 대강당. 비 오는 날 실내 코스로 맞은편 박물관과 묶기 좋아요.','transit'),
- A('삼협박물관','重庆中国三峡博物馆','重庆市渝中区人民路236号','충칭·삼협 역사 박물관. 무료, 여권 지참.','transit'),
- A('관인차오 · 주제','观音桥九街','重庆市江北区观音桥九街','젊은 현지인 번화가. 밤 술집·야시장 분위기.','transit')]},
+ A('바이샹쥐','白象居','重庆市渝中区白象街','1층으로 들어가 꼭대기층으로 나오는 산비탈 옛 아파트. 숙소에서 가깝고 장강·케이블카 뷰.','白象居 / 白象街'),
+ A('인민대례당','重庆人民大礼堂','重庆市渝中区人民路173号','궁전 같은 대강당. 비 오는 날 실내 코스로 맞은편 박물관과 묶기 좋아요.','重庆人民大礼堂'),
+ A('삼협박물관','重庆中国三峡博物馆','重庆市渝中区人民路236号','충칭·삼협 역사 박물관. 무료, 여권 지참.','重庆人民大礼堂'),
+ A('관인차오 · 주제','观音桥九街','重庆市江北区观音桥九街','젊은 현지인 번화가. 밤 술집·야시장 분위기.','观音桥')]},
 
-{id:'day3',tab:'3일차 · 29(일)',title:'고진 & 장강 건너기',sub:'오전 츠치커우, 오후 장강 케이블카, 밤 난빈로',stops:[
+{id:'day3',date:'2026-11-29',tab:'3일차',dt:'29 일',title:'고진 & 장강 건너기',sub:'오전 츠치커우, 오후 장강 케이블카, 밤 난빈로',stops:[
  S('09:00','츠치커우 고진','磁器口古镇','重庆市沙坪坝区磁器口正街','천 년 된 강변 옛 마을. 오전이 덜 붐벼요. 메인 골목보다 옆 골목·강변이 분위기 좋음.',
-  '<b>지하철</b> 小什字역 1호선 직통 → 磁器口역, 약 35분 · <b>택시</b> 약 30분 50元 안팎','transit',
-  [food('천 마화','陈麻花','바삭한 꽈배기 과자, 기념품용'),food('마오쉐왕','毛血旺','츠치커우 원조격 매운 선지·내장 요리'),food('지앙조우 꼬치','烤串','길거리 간식')],'메인 거리 식당은 관광지 가격'),
+  '<b>지하철</b> 小什字역 1호선 직통 → 磁器口역, 약 35분 · <b>택시</b> 약 30분 50元 안팎','磁器口古镇','메인 거리 식당은 관광지 가격'),
  S('12:30','점심: 소십자 / 해방비','小什字','重庆市渝中区小什字','1호선으로 숙소 쪽 복귀. 숙소 바로 옆이라 쉬었다 가기 좋아요.',
-  '<b>지하철</b> 1호선 磁器口 → 小什字, 약 35분','transit',
-  [food('하오유라이 쏸라펀','好又来酸辣粉',''),food('라오마 초우쇼우','老麻抄手重庆小面','')],''),
+  '<b>지하철</b> 1호선 磁器口 → 小什字, 약 35분','小什字',''),
  S('14:30','장강 케이블카 (북역)','长江索道北站','重庆市渝中区新华路151号','1987년부터 운행한 강 건너는 케이블카. 약 4–5분 만에 남안(南岸)으로.',
-  '<b>도보</b> 숙소에서 약 10분 · 운영 08:00–22:00 (21:00 입장 마감) · 편도 30元 / 왕복 50元','walking',
-  [],'⚠ 위챗 공식계정에서 2일 전부터 예매·번호표. 정기 점검으로 운휴하는 기간이 있으니 당일 Trip.com에서 운행 여부 확인!'),
+  '<b>도보</b> 숙소에서 약 10분 · 운영 08:00–22:00 (21:00 입장 마감) · 편도 30元 / 왕복 50元','长江索道北站','⚠ 위챗 공식계정(长江索道)에서 2일 전부터 예매, 사면 대기번호 자동 발급 · 당일 16시 전 무료 환불 · 정기 점검 운휴가 있으니 전날 공지 확인 · 문의 023-68816888'),
  S('15:30','남안 옛 거리 산책','下浩里 / 龙门浩老街','重庆市南岸区下浩里','케이블카 남역에서 내려 걸어서. 下浩里는 东水门대교 옆 산비탈 옛 거리, 찻집과 노인들 마작 풍경.',
-  '<b>도보</b> 케이블카 남역에서 약 5–10분','walking',
-  [food('라오 차관','老茶馆','老鹰茶 한 잔')],'현지인 감성 최고 구간'),
- S('18:00','난빈로 강변 저녁 & 야경','南滨路 / 弹子石老街','重庆市南岸区南滨路','장강 건너편에서 보는 위중반도 스카이라인. 弹子石老街에서 저녁, 강변 산책.',
-  '<b>택시</b> 下浩里에서 약 10분 · 돌아올 땐 택시 약 15분 25元 안팎','driving',
-  [food('강변 훠궈·꼬치집','南滨路 火锅','뷰 값 포함. 본격 식사는 弹子石老街 안쪽 골목이 더 나음')],'東水门대교를 걸어서 건너 숙소로 돌아올 수도 있어요 (약 30분)')
+  '<b>도보</b> 케이블카 남역에서 약 5–10분','下浩里 / 龙门浩老街','현지인 감성 최고 구간'),
+ S('18:00','난빈로 강변 저녁 & 야경','弹子石老街','重庆市南岸区南滨路','장강 건너편에서 보는 위중반도 스카이라인. 弹子石老街에서 저녁, 강변 산책.',
+  '<b>택시</b> 下浩里에서 약 10분 · 돌아올 땐 택시 약 15분 25元 안팎','南滨路 / 弹子石老街','20:30쯤 강 위 드론쇼가 자주 열려요 · 东水门대교를 걸어서 건너 숙소로 돌아올 수도 있어요 (약 30분)')
 ],alt:[
- A('둥수이먼 장강대교','东水门长江大桥','东水门长江大桥','케이블카 운휴 시 걸어서 장강 건너기. 남안 下浩里로 바로 이어져요. 뷰는 오히려 더 좋음.','walking'),
- A('래플스시티 탐색창','来福士探索舱','重庆市渝中区朝东路来福士','숙소 근처, 두 강 합류점 위에 가로로 놓인 공중 전망 회랑.','walking'),
- A('자오퉁 찻집 (황각평)','交通茶馆','重庆市九龙坡区黄桷坪正街','옛날 그대로의 동네 찻집. 사진가들이 좋아하는 곳, 주변 그라피티 거리도.','driving')]},
+ A('둥수이먼 장강대교','东水门长江大桥','东水门长江大桥','케이블카 운휴 시 걸어서 장강 건너기. 남안 下浩里로 바로 이어져요. 뷰는 오히려 더 좋음.','下浩里 / 龙门浩老街'),
+ A('래플스시티 탐색창','重庆来福士·探索舱','重庆市渝中区朝东路来福士','숙소 근처, 두 강 합류점 위에 가로로 놓인 공중 전망 회랑.','朝天门广场'),
+ A('자오퉁 찻집 (황각평)','交通茶馆','重庆市九龙坡区黄桷坪正街','30년 넘은 서민 찻집, 盖碗茶 몇 元. 바로 옆 그라피티 거리도. 철거설이 있어 출발 전 Amap에서 영업 확인.','交通茶馆 / 黄桷坪')]},
 
-{id:'day4',tab:'4일차 · 30(월)',title:'새벽 귀국',sub:'05:00 체크아웃 → 08:30 출발 → 13:00 인천',stops:[
- S('05:00','체크아웃','朝千路26号','重庆市渝中区朝千路26号','전날 밤에 짐 정리 끝내고 영수증·여권 챙기기.',
-  '','walking',[],'전날 밤 프런트에 "明天早上五点退房" 미리 말해 두기'),
+{id:'day4',date:'2026-11-30',tab:'4일차',dt:'30 월',title:'새벽 귀국',sub:'05:00 체크아웃 → 08:30 출발 → 13:00 인천',stops:[
+ S('05:00','체크아웃','暖余·江景民宿','重庆市渝中区朝千路26号东和湾C栋','전날 밤에 짐 정리 끝내고 영수증·여권 챙기기.',
+  '','','전날 밤 프런트에 "明天早上五点退房" 미리 말해 두기'),
  S('05:30','공항으로 출발','重庆江北国际机场T3航站楼','重庆江北国际机场T3航站楼','국제선 출발은 2시간 전 도착 권장.',
-  '<b>택시만 가능</b> (지하철 첫차 전) 약 40분, 대략 70–90元 · DiDi 앱에서 <b>预约(예약)</b>으로 전날 밤 미리 잡아 두기','driving',
-  [],'원래 계획 06:00 출발도 가능하지만 여유 있게 05:30 추천'),
- S('08:30','충칭 출발 → 13:00 인천','CKG → ICN','','수고했어요!','','',[],'')
+  '<b>택시만 가능</b> (지하철 첫차 전) 약 40분, 대략 70–90元 · DiDi 앱에서 <b>预约(예약)</b>으로 전날 밤 미리 잡아 두기','机场T3','원래 계획 06:00 출발도 가능하지만 여유 있게 05:30 추천'),
+ S('08:30','충칭 출발 → 13:00 인천','CKG → ICN','','수고했어요!','','','')
 ],alt:[]}
 ];
 
+/* ── 그리기 ── */
+const nearList=nk=>(nk&&NEAR[nk])||[];
+const nearHTML=nk=>{const it=nearList(nk);if(!it.length)return'';
+ const g=Object.keys(CAT).map(c=>{const xs=it.filter(x=>x.cat===c);if(!xs.length)return'';
+  return `<div class="cat">${CAT[c][0]} ${CAT[c][1]}</div><div class="items">`+xs.map(x=>itemHTML(x)).join('')+'</div>'}).join('');
+ return `<details class="near"><summary><span>근처 맛집 · 카페 · 할 거리 <span style="color:var(--mute);font-weight:600">${it.length}곳</span></span></summary>${g}</details>`};
+const itemHTML=x=>`<div class="it">
+   <div class="n">${esc(x.ko)} <button class="cz zh" data-copy="${esc(x.zh)}">${esc(x.zh)}</button></div>
+   <a class="btn sm" data-name="${esc(x.zh)}" ${L(amap(x.zh))}>Amap</a>
+   <div class="d">${esc(x.note||'')}${x.walk?` · ${esc(x.walk)}`:''}</div></div>`;
+const acts=(q,ad)=>`<div class="row">
+  <a class="btn p" data-name="${esc(q)}" ${L(amap(q))}>📍 Amap에서 보기</a>
+  ${ad?`<button class="btn" data-copy="${esc(ad)}">주소 복사</button>`:''}</div>`;
+const stopHTML=(s,i)=>{const q=s.z.split(' / ')[0];
+ return `<article class="stop" data-t="${esc(s.t)}"><div class="sc">
+  <div class="t">${esc(s.t)}<span class="badge" hidden></span></div>
+  <h3>${esc(s.k)}</h3>${s.z?`<button class="cz zh" data-copy="${esc(q)}">${esc(s.z)}</button>`:''}
+  <p>${esc(s.desc)}</p>${s.how?`<div class="how">${s.how}</div>`:''}
+  ${s.ad?acts(q,s.ad):''}${s.tip?`<div class="tip">💡 ${esc(s.tip)}</div>`:''}${nearHTML(s.nk)}</div></article>`};
+const altHTML=a=>`<div class="sc"><h3>${esc(a.k)}</h3><button class="cz zh" data-copy="${esc(a.z)}">${esc(a.z)}</button>
+  <p>${esc(a.d)}</p>${acts(a.z,a.ad)}${nearHTML(a.nk)}</div>`;
+
 const tabs=document.getElementById('tabs'),days=document.getElementById('days');
-tabs.innerHTML=DAYS.map(d=>`<a href="#${d.id}" data-id="${d.id}">${esc(d.tab)}</a>`).join('')+`<a href="#prep" data-id="prep">준비 · 회화</a>`;
-
-const card=s=>{
- const ac=s.z&&s.ad?acts(s.z.split(' / ')[0],s.ad):'';
- const eat=s.eat.length?`<details class="eat"><summary>주변 맛집 · 할 거리 (${s.eat.length})</summary><ul>${s.eat.map(f=>`<li><b>${esc(f.n)}</b> <span class="zh">${esc(f.z)}</span> ${f.d?'— '+esc(f.d):''} · <a data-name="${esc(f.z.split(' ')[0])}" ${L(amap(f.z.split(' ')[0]))}>지도</a> <button class="btn" style="min-height:36px;padding:4px 10px" data-copy="${esc(f.z)}">복사</button></li>`).join('')}</ul></details>`:'';
- return `<article class="stop"><div class="time">${esc(s.t)}</div><div>
-  <h3>${esc(s.k)}<span class="zh">${esc(s.z)}</span></h3>
-  <p>${esc(s.desc)}</p>${s.how?`<div class="how">${s.how}</div>`:''}${ac}${eat}${s.tip?`<p class="tip">💡 ${esc(s.tip)}</p>`:''}</div></article>`};
-
-const render=()=>{
-days.innerHTML=DAYS.map(d=>`<section class="day" id="p-${d.id}"><div class="dayhead"><h2>${esc(d.title)}</h2><p>${esc(d.sub)}</p></div>
- ${d.stops.map(card).join('')}
- ${d.alt.length?`<div class="alt"><h4>대안 · 현지인 추천</h4>${d.alt.map(a=>`<div class="altItem"><b>${esc(a.k)}</b> <span class="zh">${esc(a.z)}</span><p>${esc(a.d)}</p>${acts(a.z,a.ad)}</div>`).join('')}</div>`:''}</section>`).join('')+`
-<section class="day" id="p-prep"><div class="dayhead"><h2>준비물 · 회화 · 긴급</h2><p>출발 전에 한 번, 현지에서 필요할 때 한 번</p></div>
-<div class="grid" style="margin-top:18px">
+tabs.innerHTML=DAYS.map(d=>`<a href="#${d.id}" data-id="${d.id}"><b>${esc(d.tab)}</b><span>${esc(d.dt)}<span class="td" hidden>오늘</span></span></a>`).join('')+`<a href="#food" data-id="food"><b>맛집</b><span>모아보기</span></a><a href="#prep" data-id="prep"><b>준비</b><span>회화·도구</span></a>`;
+days.innerHTML=DAYS.map(d=>`<section class="day" id="p-${d.id}"><div class="dh"><h2>${esc(d.title)}</h2><p>${esc(d.sub)}</p></div>
+ <div class="tl">${d.stops.map(stopHTML).join('')}</div>
+ ${d.alt.length?`<div class="alt"><h4>대안 · 현지인 추천</h4><div class="altg">${d.alt.map(altHTML).join('')}</div></div>`:''}</section>`).join('')+`
+<section class="day" id="p-prep"><div class="dh"><h2>준비물 · 회화 · 긴급</h2><p>출발 전에 한 번, 현지에서 필요할 때 한 번</p></div>
+<div class="grid">
  <div class="box"><h3>앱 & 결제</h3><ul>
   <li><b>알리페이</b> — 결제·지하철(交通出行 → 乘车码) 모두 여기서</li>
   <li>트래블월렛/트래블로그 카드 연결하면 수수료 낮음, 현금은 조금만</li>
-  <li><b>Amap(高德地图)</b> 또는 바이두지도 — 구글맵은 위치가 어긋나요</li>
+  <li><b>Amap(高德地图)</b> — 구글맵은 위치가 어긋나요. 이 페이지의 📍 버튼이 Amap으로 열려요</li>
   <li><b>eSIM</b> 미리 설치, <b>VPN</b> 필수(카톡·구글 등)</li></ul></div>
- <div class="box"><h3>택시 타는 법</h3><ul>
-  <li><b>🚖 DiDi 호출</b> 버튼 → 목적지 이름이 복사되고 DiDi 앱이 열려요</li>
-  <li>DiDi 목적지(您要去哪儿) 칸에 붙여넣기 → 맨 위 결과 선택 → 호출</li>
+ <div class="box"><h3>택시(DiDi) 타는 법</h3><ul>
+  <li>DiDi 앱 → 목적지(您要去哪儿) 칸에 중국어 이름 붙여넣기 → 맨 위 결과 선택</li>
+  <li>일정 카드의 <b>중국어 이름</b>을 누르면 복사돼요</li>
+  <li>숙소로 갈 땐 위 숙소 카드의 <b>이름 복사</b> → 「暖余·江景民宿」가 맨 위에 떠요</li>
   <li>충칭은 언덕길이라 지도상 가까워도 걸으면 계단 지옥일 수 있어요</li></ul></div>
  <div class="box"><h3>바로 쓰는 중국어</h3><table>${[
-  ['조금만 맵게','微辣','wēi là'],['안 맵게','不辣','bú là'],['고수 빼 주세요','不要香菜','bú yào xiāngcài'],['계산할게요','买单','mǎi dān'],['알리페이 돼요?','能用支付宝吗？','néng yòng Zhīfùbǎo ma'],['화장실 어디예요?','厕所在哪里？','cèsuǒ zài nǎlǐ'],['이거 주세요','我要这个','wǒ yào zhège'],['얼마예요?','多少钱？','duōshao qián']
- ].map(r=>`<tr><td>${r[0]}</td><td class="zh" style="font-size:18px">${r[1]}<div class="tip">${r[2]}</div></td><td><button class="btn" style="min-height:36px;padding:4px 10px" data-taxi="${esc(r[1])}|">크게</button></td></tr>`).join('')}</table></div>
+  ['조금만 맵게','微辣','wēi là'],['안 맵게','不辣','bú là'],['고수 빼 주세요','不要香菜','bú yào xiāngcài'],['계산할게요','买单','mǎi dān'],['알리페이 돼요?','能用支付宝吗？','néng yòng Zhīfùbǎo ma'],['화장실 어디예요?','厕所在哪里？','cèsuǒ zài nǎlǐ'],['이거 주세요','我要这个','wǒ yào zhège'],['얼마예요?','多少钱？','duōshao qián'],
+  ['포장해 주세요','打包','dǎ bāo'],['여기서 세워 주세요','师傅，就在这里停','shīfu, jiù zài zhèlǐ tíng'],['이 주소로 가 주세요','请到这个地址','qǐng dào zhège dìzhǐ'],['몇 명이에요 → 세 명','三个人','sān ge rén'],['물 주세요(따뜻한)','请给我热水','qǐng gěi wǒ rè shuǐ'],['영수증 주세요','请给我小票','qǐng gěi wǒ xiǎo piào']
+ ].map(r=>`<tr><td>${r[0]}</td><td class="zh" style="font-size:18px">${r[1]}<div class="tip" style="margin:0">${r[2]}</div></td><td style="text-align:right"><button class="btn sm" data-big="${esc(r[1])}" data-sub="${esc(r[0])}">크게</button></td></tr>`).join('')}</table></div>
+ <div class="box"><h3>💱 환율 계산</h3>
+  <div class="fx"><div><label for="fxC">위안 (元)</label><input id="fxC" inputmode="decimal" placeholder="100"></div><div class="eq">=</div><div><label for="fxK">원 (₩)</label><input id="fxK" inputmode="numeric" placeholder=""></div></div>
+  <div class="rate">1元 = <input id="fxR" inputmode="decimal"> 원 <span>(대략값 · 알리페이 결제 화면 환율로 고치면 저장돼요)</span></div></div>
+ <div class="box"><h3>🍲 훠궈 주문 가이드</h3><table>${[
+  ['맵기','微辣 조금 · 中辣 중간 · 特辣 아주'],['반반 냄비','鸳鸯锅 (매운 탕 + 맑은 탕)'],['맑은 탕','清汤 / 菌汤(버섯)'],['꼭 시키는 것','毛肚(천엽) · 鸭肠(오리 창자) · 黄喉 · 嫩牛肉'],['무난한 것','肥牛(소고기) · 午餐肉(스팸) · 土豆片 · 藕片(연근)'],['소스','油碟 = 참기름+마늘 (기본)'],['같이 마실 것','酸梅汤(매실 음료) · 冰粉(디저트)']
+ ].map(r=>`<tr><td style="white-space:nowrap;color:var(--mute);font-size:14px">${r[0]}</td><td class="zh" style="font-size:15px">${r[1]}</td></tr>`).join('')}</table>
+  <div class="tip">2–3명이면 고기·채소 5–7접시 정도. 1인 80–150元대.</div></div>
+ <div class="box"><h3>✅ 체크리스트</h3><ul class="chk" id="chk"></ul></div>
+ <div class="box"><h3>📶 인터넷·이 페이지</h3><ul>
+  <li>이 페이지(github.io)는 중국에서 VPN 없이 안 열릴 수 있어요 → <b>VPN 켠 상태에서 한 번 열어 두기</b></li>
+  <li>Safari 공유 → <b>홈 화면에 추가</b>하면 앱처럼 열려요</li>
+  <li>Amap·DiDi·알리페이는 VPN 없이 쓰는 게 더 빨라요(중국 서버)</li></ul></div>
  <div class="box"><h3>긴급</h3><ul>
   <li>경찰 <b>110</b> · 구급 <b>120</b> · 화재 <b>119</b></li>
   <li>영사콜센터(24시간) <b>+82-2-3210-0404</b></li>
   <li>여권 사본 사진을 휴대폰에 저장</li>
   <li>11월 말 충칭은 흐리고 쌀쌀한 편(대략 10℃ 안팎) · 가벼운 패딩, 걷기 편한 신발</li></ul></div>
 </div></section>`;
-
-};render();
 setL(document.getElementById('hotelAmap'),amap(H2));
-setL(document.getElementById('hotelBaidu'),baidu(H2));
 
-const show=()=>{const id=(location.hash||'#day1').slice(1);const ok=document.getElementById('p-'+id)?id:'day1';
+/* ── 내 주변 빠른 검색: Amap 앱에서 지금 위치 주변으로 검색 ── */
+document.getElementById('quick').innerHTML=[['🏪','편의점','便利店'],['💊','약국','药店'],['🚻','화장실','公共厕所'],['🚇','지하철역','地铁站'],['☕','카페','咖啡'],['🍲','훠궈','火锅'],['🍜','小面','重庆小面'],['🛒','마트','超市'],['🏧','ATM','ATM'],['🏥','병원','医院']]
+ .map(([i,k,z])=>`<a class="chip" data-name="${esc(z)}" ${L(amap(z))}>${i} ${esc(k)}</a>`).join('');
+
+/* ── 맛집 모아보기 ── */
+const AREAS=[];DAYS.forEach(d=>[...d.stops,...d.alt].forEach(x=>{if(x.nk&&NEAR[x.nk]&&!AREAS.find(a=>a.nk===x.nk))AREAS.push({nk:x.nk,k:x.k,z:x.z.split(' / ')[0],day:d.tab})}));
+const foodSec=document.createElement('section');foodSec.className='day';foodSec.id='p-food';
+const total=AREAS.reduce((n,a)=>n+NEAR[a.nk].length,0);
+foodSec.innerHTML=`<div class="dh"><h2>맛집 · 카페 · 할 거리</h2><p>일정 장소별 근처 ${total}곳 · Amap 버튼은 앱에서 바로 열려요</p></div>
+ <div class="chips" id="fcat" style="margin-top:14px"><button class="chip" data-f="all" aria-pressed="true">전체</button>${Object.keys(CAT).map(c=>`<button class="chip" data-f="${c}" aria-pressed="false">${CAT[c][0]} ${CAT[c][1]}</button>`).join('')}</div>
+ <div id="flist"></div>`;
+days.appendChild(foodSec);
+const drawFood=f=>{document.getElementById('flist').innerHTML=AREAS.map(a=>{const xs=NEAR[a.nk].filter(x=>f==='all'||x.cat===f);if(!xs.length)return'';
+ return `<h3 class="fh">${esc(a.k)} <small>${esc(a.day)} · <span class="zh">${esc(a.z)}</span></small></h3><div class="flist"><div class="items">${xs.map(itemHTML).join('')}</div></div>`}).join('')||'<p class="tip">해당 항목이 없어요</p>'};
+drawFood('all');
+document.getElementById('fcat').addEventListener('click',e=>{const b=e.target.closest('[data-f]');if(!b)return;
+ document.querySelectorAll('#fcat .chip').forEach(x=>x.setAttribute('aria-pressed',x===b));drawFood(b.dataset.f)});
+
+/* ── 환율(로컬 저장) ── */
+const ls={get:k=>{try{return localStorage.getItem(k)}catch(_){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(_){}}};
+const fxC=document.getElementById('fxC'),fxK=document.getElementById('fxK'),fxR=document.getElementById('fxR');
+fxR.value=ls.get('cq-rate')||'210';
+const num=v=>parseFloat(String(v).replace(/[^\d.]/g,''));
+const fmt=n=>isFinite(n)?Math.round(n).toLocaleString('ko-KR'):'';
+fxC.addEventListener('input',()=>{fxK.value=fmt(num(fxC.value)*num(fxR.value))});
+fxK.addEventListener('input',()=>{const v=num(fxK.value)/num(fxR.value);fxC.value=isFinite(v)?(Math.round(v*10)/10).toString():''});
+fxR.addEventListener('input',()=>{ls.set('cq-rate',fxR.value);fxC.dispatchEvent(new Event('input'))});
+
+/* ── 체크리스트(로컬 저장) ── */
+const CHK=['여권 · 여권 사본 사진','알리페이에 해외카드 연결 · 실명 인증','DiDi 앱 설치 · 로그인(국제 번호)','Amap(高德地图) 설치','eSIM 설치 · 데이터 켜기 확인','VPN 앱 설치 · 접속 확인','보조배터리(기내 반입)','장강 케이블카 예매 확인(위챗)','4일차 05:30 DiDi 예약(预约)','전날 밤 프런트에 체크아웃 말하기'];
+const done=new Set(JSON.parse(ls.get('cq-chk')||'[]'));
+document.getElementById('chk').innerHTML=CHK.map((t,i)=>`<li><label><input type="checkbox" data-i="${i}"${done.has(i)?' checked':''}><span>${esc(t)}</span></label></li>`).join('');
+document.getElementById('chk').addEventListener('change',e=>{const i=+e.target.dataset.i;e.target.checked?done.add(i):done.delete(i);ls.set('cq-chk',JSON.stringify([...done]))});
+
+/* ── 오늘 날짜·지금 일정 표시(중국 시간 기준) ── */
+const cn=()=>{const p=Object.fromEntries(new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date()).map(x=>[x.type,x.value]));
+ return {d:`${p.year}-${p.month}-${p.day}`,m:+p.hour*60+ +p.minute}};
+const today=()=>{const n=cn();return DAYS.find(d=>d.date===n.d)};
+const mark=()=>{const n=cn(),td=today();
+ tabs.querySelectorAll('.td').forEach(x=>x.hidden=true);
+ document.querySelectorAll('.stop').forEach(s=>{s.classList.remove('now','past');const b=s.querySelector('.badge');b.hidden=true;b.classList.remove('nx')});
+ if(!td)return;
+ tabs.querySelector(`a[data-id="${td.id}"] .td`).hidden=false;
+ const st=[...document.querySelectorAll(`#p-${td.id} .stop`)],mins=st.map(s=>{const[h,m]=s.dataset.t.split(':');return +h*60+ +m});
+ let cur=-1;mins.forEach((v,i)=>{if(v<=n.m)cur=i});
+ st.forEach((s,i)=>{const b=s.querySelector('.badge');
+  if(i<cur)s.classList.add('past');
+  if(i===cur){s.classList.add('now');b.textContent='지금';b.hidden=false}
+  if(i===cur+1){b.textContent='다음';b.classList.add('nx');b.hidden=false}})};
+
+const show=()=>{const td=today();const id=(location.hash||'#'+(td?td.id:'day1')).slice(1);const ok=document.getElementById('p-'+id)?id:'day1';
  document.querySelectorAll('.day').forEach(x=>x.classList.toggle('on',x.id==='p-'+ok));
  tabs.querySelectorAll('a').forEach(a=>a.setAttribute('aria-current',a.dataset.id===ok))};
-// 날짜 탭을 바꾸면 그날 일정 맨 위로(아래로 스크롤해 둔 상태에서 탭을 눌러도 처음부터 보이게)
-window.addEventListener('hashchange',()=>{show();const t=document.querySelector('main').getBoundingClientRect().top+scrollY-60;if(scrollY>t)scrollTo({top:t})});show();
+// 날짜 탭을 바꾸면 그날 일정 맨 위로
+window.addEventListener('hashchange',()=>{show();const t=days.getBoundingClientRect().top+scrollY-70;if(scrollY>t)scrollTo({top:t})});
+show();mark();setInterval(mark,60000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)mark()});
 
+/* ── 복사·안내·앱 열기 ── */
 const toast=document.getElementById('toast');let tt;
-// 안내는 화면 위쪽에(아이폰 Safari는 아래 주소창이 화면을 덮음). link가 있으면 「웹 지도로 열기」 버튼을 붙여 오래 보여 줌
 const say=(m,link)=>{toast.textContent=m;if(link){const a=document.createElement('a');a.href=link;a.textContent='웹 지도로 열기';toast.append(a)}
- toast.classList.toggle('act',!!link);toast.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>toast.classList.remove('on','act'),link?20000:3200)};
-const taxi=document.getElementById('taxi');
-const cp=(v,m)=>{(navigator.clipboard?navigator.clipboard.writeText(v):Promise.reject()).then(()=>say(m||'복사됨: '+v)).catch(()=>{const t=document.createElement('textarea');t.value=v;document.body.appendChild(t);t.select();try{document.execCommand('copy');say(m||'복사됨: '+v)}catch(_){}t.remove()})};
-// 앱 링크: 같은 창에서 scheme 호출 → 1.5초 안에 페이지가 숨겨지지 않으면 앱이 없다고 보고 웹 링크(없으면 안내)로
-// 아이폰 Safari는 「○○에서 열겠습니까?」 창이 떠 있는 동안에도 페이지가 보이는 상태라, 시간이 지났다고 웹으로 넘기면
-// 사용자가 「열기」를 누르기 전에 웹으로 가 버림 → 자동 이동 대신 2초 뒤 「웹 지도로 열기」 버튼만 보여 줌
-const openApp=(app,web,fail)=>{
- let gone=false;say('앱을 여는 중…');const hid=()=>{if(document.hidden)gone=true};const ph=()=>{gone=true};
+ toast.classList.toggle('act',!!link);toast.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>toast.classList.remove('on','act'),link?20000:2600)};
+const cp=(v,m)=>{const ok=()=>say(m||'복사했어요: '+v);
+ (navigator.clipboard?navigator.clipboard.writeText(v):Promise.reject()).then(ok).catch(()=>{const t=document.createElement('textarea');t.value=v;t.setAttribute('readonly','');t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();try{document.execCommand('copy');ok()}catch(_){say(v)}t.remove()})};
+// 아이폰 Safari는 「○○에서 열겠습니까?」 창이 떠 있는 동안에도 페이지가 보이는 상태라 자동으로 웹으로 넘기지 않고, 2초 뒤 「웹 지도로 열기」 버튼만 보여 줌
+const openApp=(app,web)=>{let gone=false;const hid=()=>{if(document.hidden)gone=true},ph=()=>{gone=true};
  document.addEventListener('visibilitychange',hid);window.addEventListener('pagehide',ph);
  location.href=app;
  setTimeout(()=>{document.removeEventListener('visibilitychange',hid);window.removeEventListener('pagehide',ph);
-  if(gone||document.hidden)return;
-  if(web)say('앱이 안 열렸다면',web);else say(fail||'앱이 열리지 않았어요')},2000)};
+  if(!gone&&!document.hidden)say('앱이 안 열렸다면',web)},2000)};
+const big=document.getElementById('big');
 document.addEventListener('click',e=>{
  const ap=e.target.closest('a[data-app]');
- if(ap){e.preventDefault();openApp(ap.getAttribute('href'),ap.dataset.web,ap.dataset.fail)}
- const n=e.target.closest('a[data-name]');
- if(n&&navigator.clipboard){navigator.clipboard.writeText(n.dataset.name).then(()=>say('「'+n.dataset.name+'」 복사됨 · 앱이 안 열리면 앱 검색창에 붙여넣기')).catch(()=>{})}
+ if(ap){e.preventDefault();openApp(ap.getAttribute('href'),ap.dataset.web);const n=ap.dataset.name;if(n&&navigator.clipboard)navigator.clipboard.writeText(n).then(()=>say('「'+n+'」 복사됨 · Amap 여는 중…')).catch(()=>{});return}
  const c=e.target.closest('[data-copy]');
- if(c){const v=c.dataset.copy;(navigator.clipboard?navigator.clipboard.writeText(v):Promise.reject()).then(()=>say('복사했어요: '+v)).catch(()=>{const t=document.createElement('textarea');t.value=v;document.body.appendChild(t);t.select();try{document.execCommand('copy');say('복사했어요')}catch(_){say(v)}t.remove()})}
- const dd=e.target.closest('[data-didi]');
- if(dd){const v=dd.dataset.didi;
-  // diditaxi:// 는 DiDi 공식 문서로 확인되지 않은 scheme(커뮤니티 목록 기준). 목적지 파라미터도 미확인이라 앱만 열고 붙여넣기 안내
-  if(IOS0||AND0){cp(v,'「'+v+'」 복사됨 · DiDi 목적지 칸에 붙여넣기');openApp('diditaxi://','','DiDi 앱이 안 열렸어요 · 앱 설치를 확인해 주세요 (목적지는 복사돼 있어요)')}
-  else cp(v,'「'+v+'」 복사됨 · DiDi는 휴대폰에서 열려요')}
- const x=e.target.closest('[data-taxi]');
- if(x){const [to,ad]=x.dataset.taxi.split('|');document.getElementById('taxiTo').textContent=to;document.getElementById('taxiAd').textContent=(ad&&ad!==to)?ad:'';
-  taxi.querySelector('.say').style.display=ad===''?'none':'';taxi.classList.add('on')}
+ if(c){cp(c.dataset.copy,c.dataset.msg?'복사했어요 · '+c.dataset.msg:null);return}
+ const b=e.target.closest('[data-big]');
+ if(b){document.getElementById('bigTo').textContent=b.dataset.big;document.getElementById('bigSub').textContent=b.dataset.sub||'';big.classList.add('on')}
 });
-document.getElementById('taxiClose').addEventListener('click',()=>taxi.classList.remove('on'));
-document.addEventListener('keydown',e=>{if(e.key==='Escape')taxi.classList.remove('on')});
+document.getElementById('bigClose').addEventListener('click',()=>big.classList.remove('on'));
+document.addEventListener('keydown',e=>{if(e.key==='Escape')big.classList.remove('on')});
 }
 </script>
 </body>
