@@ -15,6 +15,7 @@
 :root{color-scheme:light dark;--bg:light-dark(#fbf6f1,#161211);--card:light-dark(#fff,#211b19);--ink:light-dark(#1d1615,#f4ece8);--mute:light-dark(#6d5f5a,#b3a49e);--red:#c8281e;--red2:light-dark(#fde7e3,#3a1714);--teal:light-dark(#0f7a78,#4fc2bd);--line:light-dark(#eadcd5,#3a302d)}
 :root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
 *{box-sizing:border-box;min-width:0}
+[hidden]{display:none!important}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Noto Sans KR",system-ui,sans-serif;overflow-x:clip}
 .zh{font-family:"Noto Serif SC","Songti SC",serif}
 .band{padding:clamp(20px,4vw,48px) max(5vw,16px)}
@@ -33,6 +34,9 @@ nav a[aria-current=true]{background:var(--red);color:#fff}
 .btn{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:8px 13px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:600 14px "Noto Sans KR",sans-serif;text-decoration:none;cursor:pointer}
 .btn.r{background:var(--red);border-color:var(--red);color:#fff}
 .btn.t{color:var(--teal)}
+.btn.g{background:var(--teal);border-color:var(--teal);color:var(--card)}
+.acts.main{flex-wrap:nowrap}.acts.main .btn{flex:1 1 0;justify-content:center;min-height:50px;font-size:15px}
+.acts.sub{gap:6px;margin-top:-2px}.btn.s{min-height:40px;padding:6px 11px;font-size:13px;color:var(--mute)}
 .btn:focus-visible,nav a:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
 .day{display:none}.day.on{display:block}
 .dayhead h2{font-size:clamp(26px,5vw,36px);line-height:1.1;margin:0 0 4px}
@@ -111,14 +115,15 @@ footer{color:var(--mute);font-size:13px}
   <div><b>숙소 · Nuanyu Apartment</b><span class="zh">暖余·江景民宿 · 东和湾 C栋</span><span class="zh" style="font-size:16px">重庆市渝中区朝千路26号东和湾C栋</span><span class="tip" style="color:#b3a49e">26 Chaoqian Rd · 소십자(小什字)~차오톈먼 사이, 해방비·홍야동 걸어서 가는 위치</span></div>
   <div class="acts" style="margin:0">
    <button class="btn r" data-didi="暖余·江景民宿(重庆解放碑洪崖洞店)">🚖 숙소로 DiDi</button>
+   <a class="btn g" id="hotelRoute" data-name="朝千路26号" hidden>🧭 숙소로 길찾기</a>
    <button class="btn" data-copy="重庆市渝中区朝千路26号东和湾C栋">주소 복사</button>
-   <a class="btn" id="hotelAmap" data-name="朝千路26号">Amap</a>
+   <a class="btn" id="hotelAmap" data-name="朝千路26号">📍 지도</a>
   </div>
  </div>
 </section>
 
 <nav><div class="wrap" id="tabs"></div></nav>
-<div class="note" id="note"><b>Amap·바이두</b>: 웹 지도가 열리면 위쪽 「打开App / 在App中打开」을 누르세요. 버튼을 누르면 장소 이름이 복사돼요. <button class="btn" id="mode" hidden></button></div>
+<div class="note" id="note"><b>🚖 DiDi 호출</b> 목적지 이름이 복사되고 DiDi가 열려요 → 목적지 칸에 붙여넣기 · <b>🧭 길찾기</b> 지금 있는 곳에서 Amap 경로 · 앱이 없으면 웹 지도로 열려요</div>
 <main class="band"><div class="wrap" id="days"></div></main>
 <footer class="band"><div class="wrap">이동 시간과 요금은 대략적인 값이에요. 운영 시간은 현장 사정으로 바뀔 수 있으니 출발 전에 Amap에서 한 번 더 확인하세요.</div></footer>
 
@@ -139,35 +144,38 @@ const DIDI={'朝千路26号':'暖余·江景民宿(重庆解放碑洪崖洞店)'
  '小什字':'小什字地铁站','南滨路':'弹子石老街','来福士探索舱':'重庆来福士广场','重庆江北国际机场T3航站楼':'重庆江北国际机场T3航站楼'};
 const dn=q=>DIDI[q]||q;
 const enc=encodeURIComponent;
-let WEB=false;try{WEB=localStorage.getItem('cqweb')==='1'}catch(_){}
+const H2='重庆市渝中区朝千路26号东和湾C栋';
 const IOS0=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
 const AND0=/Android/.test(navigator.userAgent);
-let IOS=IOS0&&!AND0&&!WEB,AND=AND0&&!WEB;
+const IOS=IOS0&&!AND0,AND=AND0;
 // 각 링크는 {app, web}. app이 비어 있으면(데스크톱·웹 모드) 웹 링크만 새 창으로 연다
 const amap=q=>({
  app:IOS?`iosamap://poi?sourceApplication=cqtrip&name=${enc(q)}&dev=0`
   :AND?`androidamap://poi?sourceApplication=cqtrip&keywords=${enc(q)}&dev=0`:'',
  web:`https://uri.amap.com/search?keyword=${enc(q)}&city=${enc('重庆')}&callnative=1`});
-// Amap 공식 iOS 경로 URI: 출발·도착 좌표가 없으면 sname/dname 이름으로 경로 계획. t: 0 운전, 1 대중교통, 2 도보
-// (Android는 공식 문서상 dlat/dlon 필수라 좌표 없이는 쓰지 않음 → iOS에서만 버튼 표시)
-const amapPath=(q,m)=>({app:`iosamap://path?sourceApplication=cqtrip&sname=${enc(H)}&dname=${enc(q)}&dev=0&t=${m==='walking'?2:m==='driving'?0:1}`,web:amap(q).web});
+// Amap 공식 iOS 경로 URI: 출발지(sid·slat·slon·sname)는 선택 → 비우면 현재 위치에서 출발. 도착 좌표가 없으면 dname 이름으로 경로 계획. t: 0 운전, 1 대중교통, 2 도보
+const amapPath=(q,m)=>({app:`iosamap://path?sourceApplication=cqtrip&dname=${enc(q)}&dev=0&t=${m==='walking'?2:m==='driving'?0:1}`,web:amap(q).web});
 // Android용 목적지 좌표: OpenStreetMap(Nominatim) WGS-84 → dev=1로 넘기면 Amap이 GCJ-02로 변환(Amap 공식 문서).
 // 장소와 정확히 맞는 POI만 넣음. 공항 T3·다리·케이블카·긴 도로 등 한 점으로 정하기 애매한 곳은 일부러 비움
 const GEO={'解放碑':[29.5601078,106.5733671],'洪崖洞':[29.5650738,106.5753425],'李子坝轻轨站观景平台':[29.5556826,106.5338753],'鹅岭公园':[29.5524602,106.5320399],
  '十八梯传统风貌区':[29.5541255,106.568959],'山城巷':[29.5534108,106.5629178],'磁器口古镇':[29.5792968,106.4424353],'小什字':[29.5618154,106.5791934],'下浩里':[29.5604626,106.5916274],
  '朝天门广场':[29.5696961,106.5840783],'戴家巷崖壁步道':[29.5638836,106.5728591],'白象居':[29.5585282,106.5813482],'重庆人民大礼堂':[29.5643361,106.5504098],
  '重庆中国三峡博物馆':[29.5648943,106.5465582],'来福士探索舱':[29.5675551,106.5831253]};
-// Android Amap 경로 URI(공식 문서: amapuri://route/plan/, dlat·dlon 필수). 숙소 좌표는 번지까지 확인이 안 돼서 출발지는 비움 → 현재 위치에서 출발
+// Android Amap 경로 URI(공식 문서: amapuri://route/plan/, dlat·dlon 필수). 출발지를 비우면 현재 위치에서 출발(공식 문서)
 const amapRoute=(q,m)=>({app:`amapuri://route/plan/?sourceApplication=cqtrip&dlat=${GEO[q][0]}&dlon=${GEO[q][1]}&dname=${enc(q)}&dev=1&t=${m==='walking'?2:m==='driving'?0:1}`,web:amap(q).web});
-const routeBtn=(q0,m)=>{const q=esc(q0);return IOS?`<a class="btn" data-name="${q}" ${L(amapPath(q0,m))}>Amap 길찾기(숙소→)</a>`
- :AND&&GEO[q0]?`<a class="btn" data-name="${q}" ${L(amapRoute(q0,m))}>Amap 길찾기(현위치→)</a>`:''};
+// 길찾기: iOS는 이름으로, Android는 좌표가 있는 곳만. PC는 길찾기 버튼 없음(지도만)
+const route=(q,m)=>IOS?amapPath(q,m):AND&&GEO[q]?amapRoute(q,m):null;
 const bm=m=>m==='walking'?'walking':m==='driving'?'driving':'transit';
-const bq=(q,m)=>`origin=${enc('name:'+H)}&destination=${enc('name:'+q)}&mode=${bm(m)}&region=${enc('重庆')}`;
-// 바이두 공식 문서: iOS는 baidumap://, Android 웹페이지에서는 bdapp:// 로 호출
-const baidu=(q,m)=>({
- app:IOS?`baidumap://map/direction?${bq(q,m)}&src=ios.cqtrip.guide`
-  :AND?`bdapp://map/direction?${bq(q,m)}&src=andr.cqtrip.guide`:'',
- web:`https://api.map.baidu.com/direction?${bq(q,m)}&output=html&src=webapp.cqtrip.guide`});
+// 바이두 공식 iOS 문서: origin=我的位置 이면 앱의 현재 위치에서 출발(7.1 이상). Android·웹 문서에는 현재 위치 출발 방법이 없어 iOS에서만 표시
+const baidu=(q,m)=>IOS?{app:`baidumap://map/direction?origin=${enc('我的位置')}&destination=${enc('name:'+q)}&mode=${bm(m)}&region=${enc('重庆')}&src=ios.cqtrip.guide`,web:amap(q).web}:null;
+const acts=(q,ad,m)=>{const r=route(q,m),b=baidu(q,m),e=esc(q);return `<div class="acts main">
+  <button class="btn r" data-didi="${esc(dn(q))}">🚖 DiDi 호출</button>
+  ${r?`<a class="btn g" data-name="${e}" ${L(r)}>🧭 길찾기</a>`:''}</div>
+ <div class="acts sub">
+  <a class="btn s" data-name="${e}" ${L(amap(q))}>📍 지도</a>
+  ${b?`<a class="btn s" data-name="${e}" ${L(b)}>바이두 길찾기</a>`:''}
+  <button class="btn s" data-copy="${esc(ad)}">주소 복사</button>
+  <a target="_blank" rel="noopener" class="btn s" href="${pics(q)}">사진</a></div>`};
 const L=o=>o.app?`href="${esc(o.app)}" data-app="1" data-web="${esc(o.web)}"`:`href="${esc(o.web)}" target="_blank" rel="noopener"`;
 const setL=(el,o)=>{if(o.app){el.href=o.app;el.dataset.app='1';el.dataset.web=o.web;el.removeAttribute('target');el.removeAttribute('rel')}else{el.href=o.web;delete el.dataset.app;delete el.dataset.web;el.target='_blank';el.rel='noopener'}};
 const apple=(q,m)=>`https://maps.apple.com/?saddr=${enc(H)}&daddr=${enc(q.startsWith('重庆')?q:'重庆 '+q)}&dirflg=${m==='walking'?'w':m==='driving'?'d':'r'}`;
@@ -258,28 +266,16 @@ const tabs=document.getElementById('tabs'),days=document.getElementById('days');
 tabs.innerHTML=DAYS.map(d=>`<a href="#${d.id}" data-id="${d.id}">${esc(d.tab)}</a>`).join('')+`<a href="#prep" data-id="prep">준비 · 회화</a>`;
 
 const card=s=>{
- const acts=s.z&&s.ad?`<div class="acts">
-  <a class="btn r" data-name="${esc(s.z.split(' / ')[0])}" ${L(amap(s.z.split(' / ')[0]))}>Amap</a>
-  ${routeBtn(s.z.split(' / ')[0],s.mode)}
-  <a class="btn" data-name="${esc(s.z.split(' / ')[0])}" ${L(baidu(s.z.split(' / ')[0],s.mode))}>바이두 길찾기(숙소→)</a>
-  <button class="btn r" data-didi="${esc(dn(s.z.split(' / ')[0]))}">🚖 DiDi 호출</button>
-  <button class="btn" data-copy="${esc(s.ad)}">주소 복사</button>
-  <a target="_blank" rel="noopener" class="btn t" href="${pics(s.z.split(' / ')[0])}">사진</a></div>`:'';
- const eat=s.eat.length?`<details class="eat"><summary>주변 맛집 · 할 거리 (${s.eat.length})</summary><ul>${s.eat.map(f=>`<li><b>${esc(f.n)}</b> <span class="zh">${esc(f.z)}</span> ${f.d?'— '+esc(f.d):''} · <a data-name="${esc(f.z.split(' ')[0])}" ${L(amap(f.z.split(' ')[0]))}>Amap</a> <button class="btn" style="min-height:36px;padding:4px 10px" data-copy="${esc(f.z)}">복사</button></li>`).join('')}</ul></details>`:'';
+ const ac=s.z&&s.ad?acts(s.z.split(' / ')[0],s.ad,s.mode):'';
+ const eat=s.eat.length?`<details class="eat"><summary>주변 맛집 · 할 거리 (${s.eat.length})</summary><ul>${s.eat.map(f=>`<li><b>${esc(f.n)}</b> <span class="zh">${esc(f.z)}</span> ${f.d?'— '+esc(f.d):''} · <a data-name="${esc(f.z.split(' ')[0])}" ${L(amap(f.z.split(' ')[0]))}>지도</a> <button class="btn" style="min-height:36px;padding:4px 10px" data-copy="${esc(f.z)}">복사</button></li>`).join('')}</ul></details>`:'';
  return `<article class="stop"><div class="time">${esc(s.t)}</div><div>
   <h3>${esc(s.k)}<span class="zh">${esc(s.z)}</span></h3>
-  <p>${esc(s.desc)}</p>${s.how?`<div class="how">${s.how}</div>`:''}${acts}${eat}${s.tip?`<p class="tip">💡 ${esc(s.tip)}</p>`:''}</div></article>`};
+  <p>${esc(s.desc)}</p>${s.how?`<div class="how">${s.how}</div>`:''}${ac}${eat}${s.tip?`<p class="tip">💡 ${esc(s.tip)}</p>`:''}</div></article>`};
 
 const render=()=>{
 days.innerHTML=DAYS.map(d=>`<section class="day" id="p-${d.id}"><div class="dayhead"><h2>${esc(d.title)}</h2><p>${esc(d.sub)}</p></div>
  ${d.stops.map(card).join('')}
- ${d.alt.length?`<div class="alt"><h4>대안 · 현지인 추천</h4>${d.alt.map(a=>`<div class="altItem"><b>${esc(a.k)}</b> <span class="zh">${esc(a.z)}</span><p>${esc(a.d)}</p><div class="acts">
-  <a class="btn r" data-name="${esc(a.z)}" ${L(amap(a.z))}>Amap</a>
-  ${routeBtn(a.z,a.m)}
-  <a class="btn" data-name="${esc(a.z)}" ${L(baidu(a.z,a.m))}>바이두 길찾기(숙소→)</a>
-  <button class="btn r" data-didi="${esc(dn(a.z))}">🚖 DiDi 호출</button>
-  <button class="btn" data-copy="${esc(a.ad)}">주소 복사</button>
-  <a target="_blank" rel="noopener" class="btn t" href="${pics(a.z)}">사진</a></div></div>`).join('')}</div>`:''}</section>`).join('')+`
+ ${d.alt.length?`<div class="alt"><h4>대안 · 현지인 추천</h4>${d.alt.map(a=>`<div class="altItem"><b>${esc(a.k)}</b> <span class="zh">${esc(a.z)}</span><p>${esc(a.d)}</p>${acts(a.z,a.ad,a.m)}</div>`).join('')}</div>`:''}</section>`).join('')+`
 <section class="day" id="p-prep"><div class="dayhead"><h2>준비물 · 회화 · 긴급</h2><p>출발 전에 한 번, 현지에서 필요할 때 한 번</p></div>
 <div class="grid" style="margin-top:18px">
  <div class="box"><h3>앱 & 결제</h3><ul>
@@ -302,16 +298,14 @@ days.innerHTML=DAYS.map(d=>`<section class="day" id="p-${d.id}"><div class="dayh
 </div></section>`;
 
 };render();
-setL(document.getElementById('hotelAmap'),amap(H));
-const mb=document.getElementById('mode');
-
-const lab=()=>{mb.textContent=WEB?'앱으로 열기로 되돌리기':'앱이 안 열리면: 웹 링크로 바꾸기'};lab();
-mb.addEventListener('click',()=>{WEB=!WEB;IOS=IOS0&&!AND0&&!WEB;AND=AND0&&!WEB;try{localStorage.setItem('cqweb',WEB?'1':'0')}catch(_){}render();show();setL(document.getElementById('hotelAmap'),amap(H));lab();say(WEB?'웹 링크 모드':'앱 열기 모드')});
+setL(document.getElementById('hotelAmap'),amap(H2));
+{const hr=document.getElementById('hotelRoute');if(IOS){setL(hr,amapPath(H2,'transit'));hr.hidden=false}else hr.remove()}
 
 const show=()=>{const id=(location.hash||'#day1').slice(1);const ok=document.getElementById('p-'+id)?id:'day1';
  document.querySelectorAll('.day').forEach(x=>x.classList.toggle('on',x.id==='p-'+ok));
  tabs.querySelectorAll('a').forEach(a=>a.setAttribute('aria-current',a.dataset.id===ok))};
-window.addEventListener('hashchange',show);show();
+// 날짜 탭을 바꾸면 그날 일정 맨 위로(아래로 스크롤해 둔 상태에서 탭을 눌러도 처음부터 보이게)
+window.addEventListener('hashchange',()=>{show();const t=document.querySelector('main').getBoundingClientRect().top+scrollY-60;if(scrollY>t)scrollTo({top:t})});show();
 
 const toast=document.getElementById('toast');let tt;
 const say=m=>{toast.textContent=m;toast.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>toast.classList.remove('on'),3200)};
