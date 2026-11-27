@@ -210,7 +210,7 @@ footer{color:var(--mute);font-size:13px;padding:8px 0 calc(env(safe-area-inset-b
 
 <nav class="tabs" aria-label="날짜"><div class="wrap" id="tabs"></div></nav>
 <main class="wrap" id="days"></main>
-<footer class="wrap">이동 시간·요금·영업시간은 대략적인 값이에요. 출발 전에 Amap에서 한 번 더 확인하세요. 🚖 DiDi를 누르면 목적지 이름이 복사되고 알리페이 안 DiDi가 열려요. 목적지 칸에 붙여넣으세요.</footer>
+<footer class="wrap">이동 시간·요금·영업시간은 대략적인 값이에요. 출발 전에 Amap에서 한 번 더 확인하세요. 🚖 DiDi를 누르면 목적지 이름이 복사되고 DiDi가 열려요. 목적지 칸에 붙여넣으세요.</footer>
 </div></div>
 
 <div id="big" role="dialog" aria-modal="true" aria-label="크게 보기">
@@ -345,7 +345,7 @@ const S=(t,k,z,ad,desc,how,nk,tip)=>({t,k,z,ad,desc,how,nk,tip});
 const HZ='暖余·江景民宿(重庆解放碑洪崖洞店)';
 const DAYS=[
 {id:'day1',date:'2026-11-27',tab:'1일차',dt:'27 금',title:'도착 & 첫 야경',sub:'인천 14:00 → 충칭 16:55 · 18시 체크인 → 해방비 저녁 → 홍야동 야경',stops:[
- S('16:55','장베이 공항 T3 도착','重庆江北国际机场T3航站楼','重庆江北国际机场T3航站楼','입국 심사 후 eSIM 켜고, 알리페이 안 DiDi를 한 번 열어 두기.',
+ S('16:55','장베이 공항 T3 도착','重庆江北国际机场T3航站楼','重庆江北国际机场T3航站楼','입국 심사 후 eSIM 켜고, DiDi 앱에 로그인해 두기.',
   '<b>택시</b> 숙소까지 약 40–50분, 대략 70–90위안 · <b>지하철</b> 10호선 → 6호선 환승 → 샤오스쯔역, 약 60분 · 짐이 있으면 택시 추천','机场T3','공항 택시는 반드시 공식 택시 승차장에서. 호객 기사 무시'),
  S('18:00','숙소 체크인',HZ,'重庆市渝中区朝千路26号东和湾C栋','짐 풀고 잠깐 쉬기. 체크인은 15시부터.',
   '','',''),
@@ -412,7 +412,7 @@ const DAYS=[
  S('05:00','기상 · 체크아웃',HZ,'重庆市渝中区朝千路26号东和湾C栋','전날 밤에 짐 정리 끝내고 여권 챙기기.',
   '','','전날 밤 숙소에 내일 05시 체크아웃이라고 미리 말해 두기 (준비 탭 회화의 「크게」)'),
  S('06:00','공항 이동','重庆江北国际机场T3航站楼','重庆江北国际机场T3航站楼','',
-  '<b>택시</b> 약 40분, 대략 70–90위안 · 알리페이 DiDi의 <b>예약</b>으로 전날 밤 미리 잡아 두기','',''),
+  '<b>택시</b> 약 40분, 대략 70–90위안 · DiDi 앱의 <b>예약</b>으로 전날 밤 미리 잡아 두기','',''),
  S('07:00','공항 도착 · 수속','重庆江北国际机场T3航站楼','重庆江北国际机场T3航站楼','국제선 체크인·출국 심사.',
   '','机场T3',''),
  S('08:30','충칭 출발 → 13:00 인천','CKG → ICN','','수고했어요!','','','')
@@ -450,12 +450,12 @@ days.innerHTML=DAYS.map(d=>`<section class="day" id="p-${d.id}"><div class="dh">
 <section class="day" id="p-prep"><div class="dh"><h2>준비물 · 회화 · 긴급</h2><p>출발 전에 한 번, 현지에서 필요할 때 한 번</p></div>
 <div class="grid">
  <div class="box"><h3>앱 & 결제</h3><ul>
-  <li><b>알리페이</b> — 결제·지하철(교통 → 승차 코드)·택시(교통 → DiDi) 모두 여기서</li>
+  <li><b>알리페이</b> — 결제·지하철(교통 → 승차 코드) 모두 여기서</li>
   <li>트래블월렛/트래블로그 카드 연결하면 수수료 낮음, 현금은 조금만</li>
   <li><b>Amap(가오더 지도)</b> — 구글맵은 위치가 어긋나요. 이 페이지의 <b>Amap</b> 버튼을 누르면 앱에서 그 장소가 열려요</li>
   <li><b>eSIM</b> 미리 설치, <b>VPN</b> 필수(카톡·구글 등)</li></ul></div>
  <div class="box"><h3>택시(DiDi) 타는 법</h3><ul>
-  <li><b>🚖 DiDi</b> 버튼 → 목적지 이름이 복사되고 알리페이 안 DiDi가 열려요</li>
+  <li><b>🚖 DiDi</b> 버튼 → 목적지 이름이 복사되고 DiDi 앱이 열려요</li>
   <li>DiDi 목적지 칸을 길게 눌러 <b>붙여넣기</b> → 맨 위 결과 선택 → 호출</li>
   <li>숙소로 갈 땐 위 숙소 카드의 <b>🚖 숙소로 DiDi</b> · 기사님께는 <b>기사님께 보여주기</b></li>
   <li>충칭은 언덕길이라 지도상 가까워도 걸으면 계단 지옥일 수 있어요</li></ul></div>
@@ -513,7 +513,7 @@ fxK.addEventListener('input',()=>{const v=num(fxK.value)/num(fxR.value);fxC.valu
 fxR.addEventListener('input',()=>{ls.set('cq-rate',fxR.value);fxC.dispatchEvent(new Event('input'))});
 
 /* ── 체크리스트(로컬 저장) ── */
-const CHK=['여권 · 여권 사본 사진','알리페이에 해외카드 연결 · 실명 인증','알리페이에서 DiDi 한 번 열어 보기(교통 메뉴)','Amap(가오더 지도) 설치','eSIM 설치 · 데이터 켜기 확인','VPN 앱 설치 · 접속 확인','보조배터리(기내 반입)','장강 케이블카 예매 확인(위챗)','4일차 06:00 공항 택시 DiDi 예약','전날 밤 프런트에 체크아웃 말하기'];
+const CHK=['여권 · 여권 사본 사진','알리페이에 해외카드 연결 · 실명 인증','DiDi 앱 설치 · 로그인(국제 번호)','Amap(가오더 지도) 설치','eSIM 설치 · 데이터 켜기 확인','VPN 앱 설치 · 접속 확인','보조배터리(기내 반입)','장강 케이블카 예매 확인(위챗)','4일차 06:00 DiDi 예약','전날 밤 프런트에 체크아웃 말하기'];
 const done=new Set(JSON.parse(ls.get('cq-chk')||'[]'));
 document.getElementById('chk').innerHTML=CHK.map((t,i)=>`<li><label><input type="checkbox" data-i="${i}"${done.has(i)?' checked':''}><span>${esc(t)}</span></label></li>`).join('');
 document.getElementById('chk').addEventListener('change',e=>{const i=+e.target.dataset.i;e.target.checked?done.add(i):done.delete(i);ls.set('cq-chk',JSON.stringify([...done]))});
@@ -560,8 +560,8 @@ document.addEventListener('click',e=>{
  if(ap){e.preventDefault();openApp(ap.getAttribute('href'),ap.dataset.web);const n=ap.dataset.name;if(n&&navigator.clipboard)navigator.clipboard.writeText(n).then(()=>say('이름 복사됨 · Amap 여는 중…')).catch(()=>{});return}
  const dd=e.target.closest('[data-didi]');
  if(dd){const v=dd.dataset.didi;
-  // 알리페이 안 DiDi: alipays://platformapi/startapp?appId=20000778 (공식 문서 아님, 커뮤니티 URL Scheme 목록 기준). 목적지 파라미터는 없어 이름을 복사해 두고 엶
-  if(IOS0||AND){cp(v,'목적지 이름 복사됨 · DiDi 목적지 칸에 붙여넣기');openApp('alipays://platformapi/startapp?appId=20000778','','안 열렸어요 · 알리페이 → 교통 → DiDi에서 목적지 칸에 붙여넣기 (이름은 복사돼 있어요)')}
+  // diditaxi:// 는 DiDi 공식 문서에 없는 scheme(커뮤니티 목록 기준, 이전 버전에서 아이폰으로 열리는 것 확인). 목적지 파라미터는 없어 이름을 복사해 두고 앱만 엶
+  if(IOS0||AND){cp(v,'목적지 이름 복사됨 · DiDi 목적지 칸에 붙여넣기');openApp('diditaxi://','','DiDi가 안 열렸어요 · 앱을 직접 열고 목적지 칸에 붙여넣기 (이름은 복사돼 있어요)')}
   else cp(v,'목적지 이름 복사됨 · DiDi는 휴대폰에서 열려요');return}
  const c=e.target.closest('[data-copy]');
  if(c){cp(c.dataset.copy,c.dataset.msg?'복사했어요 · '+c.dataset.msg:null);return}
