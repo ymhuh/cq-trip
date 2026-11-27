@@ -198,7 +198,7 @@ footer{color:var(--mute);font-size:13px;padding:8px 0 calc(env(safe-area-inset-b
   <div class="nm">Nuanyu Apartment · 둥허완 C동</div>
   <div class="ad">위중구 차오첸루 26호 둥허완 C동 · 해방비·홍야동 걸어서 10–15분</div>
   <div class="row">
-   <a class="btn p" id="hotelAmap" data-name="重庆市渝中区朝千路26号东和湾C栋">📍 Amap에서 보기</a>
+   <a class="btn p" id="hotelAmap" data-name="重庆市渝中区朝千路26号东和湾C栋">Amap</a>
    <button class="btn dd" data-didi="暖余·江景民宿(重庆解放碑洪崖洞店)">🚖 숙소로 DiDi</button>
    <button class="btn" data-copy="重庆市渝中区朝千路26号东和湾C栋">주소 복사</button>
    <button class="btn" data-big="重庆市渝中区朝千路26号东和湾C栋" data-sub="이 주소로 가 주세요">기사님께 보여주기</button>
@@ -412,7 +412,7 @@ const itemHTML=x=>`<div class="it">
    <div class="bs"><a class="btn sm" data-name="${esc(x.zh)}" ${L(amap(x.zh))}>Amap</a>${DD(x.zh,1)}</div>
    <div class="d">${esc(x.note||'')}${x.walk?` · ${esc(x.walk)}`:''}</div></div>`;
 const acts=(q,ad)=>`<div class="row">
-  <a class="btn p" data-name="${esc(q)}" ${L(amap(q))}>📍 Amap에서 보기</a>
+  <a class="btn p" data-name="${esc(q)}" ${L(amap(q))}>Amap</a>
   ${DD(q)}
   ${ad?`<button class="btn" data-copy="${esc(ad)}">주소 복사</button>`:''}</div>`;
 const stopHTML=(s,i)=>{const q=s.z.split(' / ')[0];
@@ -434,7 +434,7 @@ days.innerHTML=DAYS.map(d=>`<section class="day" id="p-${d.id}"><div class="dh">
  <div class="box"><h3>앱 & 결제</h3><ul>
   <li><b>알리페이</b> — 결제·지하철(교통 → 승차 코드) 모두 여기서</li>
   <li>트래블월렛/트래블로그 카드 연결하면 수수료 낮음, 현금은 조금만</li>
-  <li><b>Amap(가오더 지도)</b> — 구글맵은 위치가 어긋나요. 이 페이지의 📍 버튼이 Amap으로 열려요</li>
+  <li><b>Amap(가오더 지도)</b> — 구글맵은 위치가 어긋나요. 이 페이지의 <b>Amap</b> 버튼을 누르면 앱에서 그 장소가 열려요</li>
   <li><b>eSIM</b> 미리 설치, <b>VPN</b> 필수(카톡·구글 등)</li></ul></div>
  <div class="box"><h3>택시(DiDi) 타는 법</h3><ul>
   <li><b>🚖 DiDi</b> 버튼 → 목적지 이름이 복사되고 DiDi 앱이 열려요</li>
